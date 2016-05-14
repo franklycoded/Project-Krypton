@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ionic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <link ios-href="build/css/app.ios.css" rel="stylesheet">
+  <link md-href="build/css/app.md.css" rel="stylesheet">
+  <link wp-href="build/css/app.wp.css" rel="stylesheet">  
+    
+  <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src &apos;self&apos; &apos;unsafe-inline&apos; &apos;unsafe-eval&apos; *.auth0.com https://cdn.auth0.com https://cdn.eu.auth0.com https://nilurcodes.eu.auth0.com localhost:* 192.168.15.114:35729 192.168.15.114:35730;font-src &apos;self&apos; *.auth0.com data: https://cdn.auth0.com;img-src &apos;self&apos; *.auth0.com *.fbcdn.net data: https://scontent.xx.fbcdn.net;connect-src &apos;self&apos; ws://localhost:* ws://192.168.15.114:* https://nilurcodes.eu.auth0.com">-->
+
+    
+  
+</head>
+<body>
+
+  <!-- this Ionic's root component and where the app will load -->
+  <ion-app></ion-app>
+
+<!-- Auth0 Lock script -->
+  <script src="https://cdn.auth0.com/js/lock-9.0.min.js"></script>
+  <!-- cordova.js required for cordova apps -->
+  <script src="cordova.js"></script>
+  <!-- Zone.js and Reflect-metadata  -->
+  <script src="build/js/angular2-polyfills.js"></script>
+  <!-- the bundle which is built from the app's source code -->
+  <script src="build/js/app.bundle.js"></script>
+</body>
+</html>
