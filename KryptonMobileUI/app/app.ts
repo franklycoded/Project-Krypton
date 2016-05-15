@@ -8,6 +8,7 @@ import {Http} from 'angular2/http'
 import {AuthHttp, AuthConfig} from 'angular2-jwt';
 import {Type} from 'angular2/core';
 import {AuthService} from './services/auth/auth';
+import {JayTracerService} from './services/tracer/jaytracer';
 
 
 @App({
@@ -20,7 +21,8 @@ import {AuthService} from './services/auth/auth';
       },
       deps: [Http]
     }),
-    AuthService
+    AuthService,
+    JayTracerService
   ]
 })
 export class MyApp {

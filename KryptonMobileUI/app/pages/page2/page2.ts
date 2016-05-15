@@ -1,6 +1,7 @@
 import {Page} from 'ionic-angular';
 import {AuthHttp} from 'angular2-jwt';
 import {AuthService} from '../../services/auth/auth';
+import {JayTracerService} from '../../services/tracer/jaytracer';
 import 'rxjs/add/operator/map';
 
 @Page({
