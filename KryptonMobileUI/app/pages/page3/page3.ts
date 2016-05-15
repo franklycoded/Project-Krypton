@@ -59,14 +59,42 @@ export class Page3 {
   }
   
   render() {
-      var w = 640,
-          h = 480,
+      var w = 2000,
+          h = 1500,
           zone = document.getElementById("zone");
           
       zone.textContent = "";
       var time = (new Date()).getTime();
       console.log("started at " + time + " with w=" + w + ", h=" + h);
-      this.jayTracer.traceTo(zone, w, h, this.scene);
+      
+      var can = document.createElement("canvas");
+      can.width = w;
+      can.height = h;
+      zone.appendChild(can);
+      var ctx = can.getContext("2d");
+      
+      var id;
+      if(ctx.createImageData){
+        id = ctx.createImageData(w, h);
+      }  
+      else if(ctx.getImageData){
+        id = ctx.getImageData(0, 0, w, h);
+      }
+      else{
+        id = { 'width' : w, 'height' : h, 'data' : new Array(w*h*4) };
+      }                          
+      
+      var rowStart = 0;
+      var rowFinish = 1500;
+      
+      var data = this.jayTracer.getImageData(this.scene, w, h, rowStart, rowFinish);
+      
+      for(var i = 0; i < data.length; i++){
+        id.data[i + (rowStart * w)] = data[i];
+      }
+      
+      ctx.putImageData(id, 0, 0);
+      
       time = (new Date()).getTime() - time;
       console.log("time taken: " + time + "ms");
     }
