@@ -25,16 +25,31 @@ export class JayTracerService {
     else                          id = { 'width' : width, 'height' : height, 'data' : new Array(width*height*4) };
     var pix = id.data;
     var aspectRatio = width / height;
-    for (var i = 0, n = pix.length, j = 1; i < n; i+=4) {
+    console.log(pix.length);
+    
+    // var segNumber = 29;
+    // var segWidth = 80;
+    // var segHeight = 60;
+    
+    // var segx1 = ((segNumber - 1) * segWidth) % width;
+    // var segx2 = segx1 + segWidth - 1;
+    // var segy1 = Math.floor((segNumber - 1) * segWidth / width) * segHeight; 
+    // var segy2 = segy1 + segHeight - 1;
+    
+    for (var i = 200 * 640 * 4, n = 300 * 640 * 4, j = 200 * 640; i < n; i+=4) {
         var y = Math.floor(j / width);
         var x = (j % width) + 1;
-        var yRec = (-y / height) + 0.5;
-        var xRec = ((x / width) - 0.5) * aspectRatio;
-        var chans = this.plotPixel(scene, xRec, yRec);
-        pix[i+0] = Math.floor(chans[0] * 255);
-        pix[i+1] = Math.floor(chans[1] * 255);
-        pix[i+2] = Math.floor(chans[2] * 255);
-        pix[i+3] = 255;
+        
+        //if(x >= segx1 && x <= segx2 && y >= segy1 && y <= segy2){
+            var yRec = (-y / height) + 0.5;
+            var xRec = ((x / width) - 0.5) * aspectRatio;
+            var chans = this.plotPixel(scene, xRec, yRec);
+            pix[i+0] = Math.floor(chans[0] * 255);
+            pix[i+1] = Math.floor(chans[1] * 255);
+            pix[i+2] = Math.floor(chans[2] * 255);
+            pix[i+3] = 255;    
+        //}
+        
         j++;
         // XXX note that here we can line by line (or even pixel by pixel) if we want to,
         //     it should be an option that one can chose as it provides better feedback for
