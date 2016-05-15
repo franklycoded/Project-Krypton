@@ -14,9 +14,9 @@ export class JayTracerService {
     
     var aspectRatio = width / height;
     
-    var data = new Array((rowFinish - rowStart) * width * 4);
+    var data = new Array((rowFinish - rowStart + 1) * width * 4);
     
-    for (var i = 0, n = (rowFinish - rowStart) * width * 4, j = rowStart * width; i < n; i+=4) {
+    for (var i = 0, n = (rowFinish - rowStart + 1) * width * 4, j = rowStart * width; i < n; i+=4) {
         var y = Math.floor(j / width);
         var x = (j % width) + 1;
         
