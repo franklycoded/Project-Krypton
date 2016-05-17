@@ -9,7 +9,7 @@ import {AuthHttp, AuthConfig} from 'angular2-jwt';
 import {Type} from 'angular2/core';
 import {AuthService} from './services/auth/auth';
 import {JayTracerService} from './services/tracer/jaytracer';
-
+import {JobRunnerService} from './services/jobs/jobrunner';
 
 @App({
   template: '<ion-nav [root]="rootPage"></ion-nav>',
@@ -22,7 +22,8 @@ import {JayTracerService} from './services/tracer/jaytracer';
       deps: [Http]
     }),
     AuthService,
-    JayTracerService
+    JayTracerService,
+    JobRunnerService
   ]
 })
 export class MyApp {

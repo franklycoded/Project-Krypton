@@ -1,6 +1,7 @@
 import {Page} from 'ionic-angular';
 //import {JayTracerService} from '../../services/tracer/jaytracer';
 import {Component, Pipe, ChangeDetectorRef} from 'angular2/core';
+import {JobRunnerService} from '../../services/jobs/jobrunner';
 
 @Page({
   templateUrl: 'build/pages/page3/page3.html'
@@ -8,8 +9,10 @@ import {Component, Pipe, ChangeDetectorRef} from 'angular2/core';
 export class Page3 {
   scene: any;
   message: string;
+  counter: number;
   
-  constructor(/*private jayTracer: JayTracerService,*/ private cd: ChangeDetectorRef) {
+  constructor(/*private jayTracer: JayTracerService,*/ private cd: ChangeDetectorRef, private jobRunnerService: JobRunnerService) {
+    this.counter = 0;
     // this.scene = {
     //     background: [0, 0, 0],
     //     shapes:     [
@@ -61,6 +64,13 @@ export class Page3 {
   }
   
   render() {
+      var self = this;
+      setInterval(() => {
+        self.executeJob();
+      }, 1000);
+      //this.executeJob();
+      
+      /*
       var w = 640,
           h = 480,
           zone = document.getElementById("zone");
@@ -90,7 +100,52 @@ export class Page3 {
       
       this.message = "rendering started...";
       
-      this.startWorkers(5, id, w, h, ctx, time);      
+      this.startWorkers(5, id, w, h, ctx, time);
+      */      
+    }
+    
+    executeJob(){
+       var w = 640,
+          h = 480,
+          zone = document.getElementById("zone");
+      
+      console.log("executing job");
+      var job = this.getTracer() + "var w = " + 640 + "; var h = " + 480 + "; var rowStart = " + 0 + "; var rowFinish = " + 639 + "; var data = getImageData(scene, w, h, rowStart, rowFinish); postMessage({results: data});";
+      
+      var subscription = this.jobRunnerService.runJob(1, job).subscribe(jobResult => {
+        this.counter++;
+        console.log((<Array<Object>>jobResult.payload).length);
+        this.message = "jobs executed: " + (this.counter);
+        subscription.unsubscribe();
+        
+        // zone.textContent = "";
+        
+        // var can = document.createElement("canvas");
+        // can.width = w;
+        // can.height = h;
+        // zone.appendChild(can);
+        // var ctx = can.getContext("2d");
+        
+        // var id;
+        // if(ctx.createImageData){
+        //   id = ctx.createImageData(w, h);
+        // }  
+        // else if(ctx.getImageData){
+        //   id = ctx.getImageData(0, 0, w, h);
+        // }
+        // else{
+        //   id = { 'width' : w, 'height' : h, 'data' : new Array(w*h*4) };
+        // }                          
+        
+        // console.log("rendering results");
+        // var imageData = <Array<Object>>jobResult.payload;
+        // for(var i = 0; i < imageData.length; i++){
+        //   id.data[i] = imageData[i];
+        // }
+      
+        // ctx.putImageData(id, 0, 0);
+        
+      });
     }
     
     evaluateResults(numWorkers, data, workerResults, id, w, ctx, time){
