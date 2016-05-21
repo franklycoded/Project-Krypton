@@ -20,7 +20,7 @@ export class Page2 {
     // Here we use authHttp to make an authenticated
     // request to the server. Change the endpoint up for
     // one that points to your own server.
-    this.authHttp.get('http://192.168.15.114:5000/api/values')
+    this.authHttp.get('http://192.168.1.66:5000/api/values')
       .map(res => res.json())
       .subscribe(
         data => {

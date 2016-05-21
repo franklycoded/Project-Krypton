@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Authorization;
 using KryptonAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KryptonAPI.Controllers
 {
@@ -35,8 +35,8 @@ namespace KryptonAPI.Controllers
                     Console.WriteLine(" - {0}", blog.Url);
                 }
             }
-            */
             
+            */
             lock(numLock){
                 numRequests++;
                 Console.WriteLine("Number of requests so far: " + numRequests.ToString());

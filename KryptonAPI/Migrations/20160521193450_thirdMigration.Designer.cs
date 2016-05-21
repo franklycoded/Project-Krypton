@@ -1,20 +1,19 @@
-using System;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Infrastructure;
-using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Migrations;
-using KryptonAPI;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace KryptonAPI.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20160505083658_MyFirstMigrations")]
-    partial class MyFirstMigrations
+    [Migration("20160521193450_thirdMigration")]
+    partial class thirdMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");
+                .HasAnnotation("ProductVersion", "1.0.0-rc2-20896");
 
             modelBuilder.Entity("KryptonAPI.Models.Blog", b =>
                 {
@@ -26,6 +25,8 @@ namespace KryptonAPI.Migrations
                     b.Property<string>("Url");
 
                     b.HasKey("BlogId");
+
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("KryptonAPI.Models.Post", b =>
@@ -40,13 +41,18 @@ namespace KryptonAPI.Migrations
                     b.Property<string>("Title");
 
                     b.HasKey("PostId");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("KryptonAPI.Models.Post", b =>
                 {
                     b.HasOne("KryptonAPI.Models.Blog")
                         .WithMany()
-                        .HasForeignKey("BlogId");
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }
