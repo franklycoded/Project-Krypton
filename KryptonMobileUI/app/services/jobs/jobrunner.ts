@@ -2,41 +2,68 @@
 import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Rx';
 import {JobResult} from '../../models/jobs/jobResult'
+import {AuthHttp} from 'angular2-jwt';
+import {AuthService} from '../../services/auth/auth';
 
 @Injectable()
 export class JobRunnerService {
   isBusy: boolean
   
-  constructor() {
+  constructor(private authHttp: AuthHttp, private auth: AuthService) {
     this.isBusy = false;
   }
   
-  public runJob(jobId: number, codeToExecute: string) : Observable<JobResult>{
-    var self = this;
-    
-    if(self.isBusy) return null;
-    
-    self.isBusy = true;
-    
+  private runJob(jobId: number, codeToExecute: string) : Observable<JobResult>{
     return Observable.create(observer => {
       var blob = new Blob([codeToExecute], {type: 'application/javascript'});
       
-      console.log("starting worker");
+      console.log("starting worker for job " + jobId);
       var worker = new Worker(URL.createObjectURL(blob));
       worker.onmessage = function(event) {
          
-        //  var resultArray = [];
-        //  for (var i = 0; i < event.data.results.length; i++) {
-        //      resultArray.push(event.data.results[i]);
-        //  }
-         
          observer.next(new JobResult(jobId, event.data.results));
          observer.complete();
-         
-        self.isBusy = false;
+        
         console.log("worker finished");
         worker.terminate();
       }; 
+    });
+  }
+  
+  public runWorker() : Observable<string> {
+    var self = this;
+    return Observable.create(observer => {
+      observer.next("Starting worker...");
+      
+      var interval = setInterval(function(){
+        if(!self.isBusy){
+          self.isBusy = true;
+          observer.next("Not busy");
+          self.authHttp.get('http://192.168.1.66:5000/api/jobs/getNext')
+            .map(res => res.json())
+            .subscribe(
+              data => {
+                observer.next("Busy with job " + data.Id)
+                console.log("Received job with id " + data.Id);
+                var jobRunSubscription = self.runJob(data.Id, data.Task).subscribe(jobResult => {
+                  console.log("Job with id " + jobResult.jobId + " finished");
+                  observer.next("Finished calculating job: " + jobResult.jobId);
+                  jobRunSubscription.unsubscribe();
+                  self.isBusy = false;
+                });
+              },
+              err => {
+                if(err.status === 404){
+                  observer.next("No jobs available"); 
+                }
+                
+                self.isBusy = false;
+              }
+            );
+        } else {
+          //observer.next("Is busy");
+        }
+      }, 1000);
     });
   }
 }
