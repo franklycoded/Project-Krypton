@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using KryptonAPI.DataContracts;
@@ -18,6 +19,8 @@ namespace KryptonAPI.Controllers
         private static List<JobDto> _jobResults = new List<JobDto>();
         
         private static int _taskNum = 10;
+        
+        private static Stopwatch _watch = new Stopwatch();
         
         static JobsController() {
             for (int i = 0; i < _taskNum; i++)
@@ -38,6 +41,8 @@ namespace KryptonAPI.Controllers
         public IActionResult GetNext()
         {
             lock(_lock){
+                if(!_watch.IsRunning) _watch.Start();
+                
                 if(_jobs.Any()){
                     var job = _jobs.Dequeue();
                     System.Console.WriteLine("Dequeued job " + job.Id.ToString());
@@ -56,6 +61,8 @@ namespace KryptonAPI.Controllers
                 System.Console.WriteLine("Received job result with jobid " + id);
                 
                 if(_jobResults.Count == _taskNum){
+                    _watch.Stop();
+                    System.Console.WriteLine("Elapsed milliseconds: " + _watch.ElapsedMilliseconds);
                     System.Console.WriteLine("Finished all jobs!");
                 }
             }

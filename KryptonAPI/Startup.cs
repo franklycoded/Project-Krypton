@@ -42,7 +42,7 @@ namespace KryptonAPI
                options.AddPolicy(
                    "mypolicy",
                    builder => {
-                       var allowedDomains = new []{"http://localhost:5000","http://localhost:8100"};
+                       var allowedDomains = new []{"http://localhost:5000","http://localhost:8100", "http://192.168.1.66:8100"};
                        
                        builder
                             .WithOrigins(allowedDomains)

@@ -2,8 +2,10 @@
 import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Rx';
 import {JobResult} from '../../models/jobs/jobResult'
+import {JobDto} from '../../models/jobs/jobDto'
 import {AuthHttp} from 'angular2-jwt';
 import {AuthService} from '../../services/auth/auth';
+import {Headers} from 'angular2/http';
 
 @Injectable()
 export class JobRunnerService {
@@ -32,6 +34,9 @@ export class JobRunnerService {
   
   public runWorker() : Observable<string> {
     var self = this;
+    var headers = new Headers({
+    'Content-Type': 'application/json'});
+    
     return Observable.create(observer => {
       observer.next("Starting worker...");
       
@@ -41,29 +46,46 @@ export class JobRunnerService {
           observer.next("Not busy");
           self.authHttp.get('http://192.168.1.66:5000/api/jobs/getNext')
             .map(res => res.json())
-            .subscribe(
+            .toPromise()
+            .then(
               data => {
                 observer.next("Busy with job " + data.Id)
                 console.log("Received job with id " + data.Id);
+                
                 var jobRunSubscription = self.runJob(data.Id, data.Task).subscribe(jobResult => {
                   console.log("Job with id " + jobResult.jobId + " finished");
                   observer.next("Finished calculating job: " + jobResult.jobId);
                   jobRunSubscription.unsubscribe();
                   self.isBusy = false;
+                  
+                  var resultDto = new JobDto(jobResult.jobId, "Success", jobResult.payload);
+                  
+                  self.authHttp.put(
+                    'http://192.168.1.66:5000/api/jobs/' + jobResult.jobId,
+                    JSON.stringify(resultDto), {headers: headers})
+                    .toPromise()
+                    .then(() => {
+                      //self.isBusy = false;
+                    })
+                    .catch(err => {
+                      console.log(err);
+                      //self.isBusy = false;
+                    });  
                 });
-              },
-              err => {
-                if(err.status === 404){
-                  observer.next("No jobs available"); 
+              })
+              .catch(
+                err => {
+                  if(err.status === 404){
+                    observer.next("No jobs available"); 
+                  } else {
+                    console.log(err);
+                  }
+                  
+                  self.isBusy = false;
                 }
-                
-                self.isBusy = false;
-              }
             );
-        } else {
-          //observer.next("Is busy");
         }
-      }, 1000);
+      }, 100);
     });
   }
 }
