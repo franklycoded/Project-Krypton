@@ -64,7 +64,12 @@ export class Page3 {
   }
   
   consumeJobs(){
-    (<any>window).plugins.insomnia.keepAwake();
+    var plugins = (<any>window).plugins;
+    
+    if(typeof(plugins) !== 'undefined'){
+     plugins.insomnia.keepAwake(); 
+    }
+    
     var subscription = this.jobRunnerService.runWorker()
       .subscribe(message => {
         this.message = message;

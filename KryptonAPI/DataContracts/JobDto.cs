@@ -9,12 +9,9 @@ namespace KryptonAPI.DataContracts
         public long Id { get; set; }
         
         [DataMember]
-        public string Status { get; set; }
-        
-        [DataMember]
         public string Task { get; set; }
         
         [DataMember]
-        public object Result { get; set; }
+        public object Data { get; set; }
     }
 }
