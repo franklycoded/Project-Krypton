@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace KryptonAPI.Migrations
 {
-    public partial class KryptonAPI : Migration
+    public partial class KryptonAPI0001 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,8 +52,8 @@ namespace KryptonAPI.Migrations
                         .Annotation("Autoincrement", true),
                     CreatedUTC = table.Column<DateTime>(nullable: false),
                     JobId = table.Column<long>(nullable: false),
+                    JsonResult = table.Column<string>(nullable: true),
                     ModifiedUTC = table.Column<DateTime>(nullable: false),
-                    Result = table.Column<byte[]>(nullable: true),
                     StatusId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>

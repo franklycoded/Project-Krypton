@@ -8,8 +8,8 @@ using KryptonAPI.Data;
 namespace KryptonAPI.Migrations
 {
     [DbContext(typeof(KryptonAPIContext))]
-    [Migration("20160611160332_KryptonAPI")]
-    partial class KryptonAPI
+    [Migration("20160611171119_KryptonAPI0001")]
+    partial class KryptonAPI0001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,9 +47,9 @@ namespace KryptonAPI.Migrations
 
                     b.Property<long>("JobId");
 
-                    b.Property<DateTime>("ModifiedUTC");
+                    b.Property<string>("JsonResult");
 
-                    b.Property<byte[]>("Result");
+                    b.Property<DateTime>("ModifiedUTC");
 
                     b.Property<long>("StatusId");
 

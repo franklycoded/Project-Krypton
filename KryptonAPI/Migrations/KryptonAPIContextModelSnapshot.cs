@@ -46,9 +46,9 @@ namespace KryptonAPI.Migrations
 
                     b.Property<long>("JobId");
 
-                    b.Property<DateTime>("ModifiedUTC");
+                    b.Property<string>("JsonResult");
 
-                    b.Property<byte[]>("Result");
+                    b.Property<DateTime>("ModifiedUTC");
 
                     b.Property<long>("StatusId");
 
