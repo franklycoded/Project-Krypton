@@ -1,13 +1,13 @@
 using System;
 
-namespace KryptonAPI.Models.JobScheduler
+namespace KryptonAPI.Data.Models.JobScheduler
 {
-    public class Task
+    public class JobItem
     {
-        public long TaskId { get; set; }
+        public long JobItemId { get; set; }
         public long StatusId { get; set; }
         public Status Status { get; set; }
-        public object Result { get; set; }
+        public byte[] Result { get; set; }
         public long JobId { get; set; }
         public Job Job { get; set; }
         public DateTime CreatedUTC { get; set; }

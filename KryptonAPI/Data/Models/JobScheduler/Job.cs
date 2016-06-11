@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace KryptonAPI.Models.JobScheduler
+namespace KryptonAPI.Data.Models.JobScheduler
 {
     public class Job
     {
@@ -9,8 +9,8 @@ namespace KryptonAPI.Models.JobScheduler
         public long UserId { get; set; }
         public long StatusId { get; set; }
         public Status Status { get; set; }
-        public object FinalResult { get; set; }
-        public List<Task> Tasks { get; set; }
+        public byte[] FinalResult { get; set; }
+        public List<JobItem> JobItems { get; set; }
         public DateTime CreatedUTC { get; set; }
         public DateTime ModifiedUTC { get; set; }
     }

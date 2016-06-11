@@ -1,4 +1,4 @@
-namespace KryptonAPI.Models.JobScheduler
+namespace KryptonAPI.Data.Models.JobScheduler
 {
     public class Status
     {
