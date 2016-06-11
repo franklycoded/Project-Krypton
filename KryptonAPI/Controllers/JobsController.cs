@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using KryptonAPI.DataContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,7 +19,7 @@ namespace KryptonAPI.Controllers
         private static Queue<JobDto> _jobs = new Queue<JobDto>();
         private static List<JobResultDto> _jobResults = new List<JobResultDto>();
         
-        private static int _taskNum = 20;
+        private static int _taskNum = 3;
         
         private static Stopwatch _watch = new Stopwatch();
         
@@ -62,6 +65,33 @@ namespace KryptonAPI.Controllers
                     _watch.Stop();
                     System.Console.WriteLine("Elapsed milliseconds: " + _watch.ElapsedMilliseconds);
                     System.Console.WriteLine("Finished all jobs!");
+                    System.Console.WriteLine("Converting image...");
+                    _jobResults.OrderBy(r => r.Id);
+                    
+                    IEnumerable<byte> imageData = new byte[0];
+                    
+                    foreach (var imageBlock in _jobResults)
+                    {
+                        var imageBytes = (imageBlock.Result as JArray).Select(z => byte.Parse(z.ToString())).ToArray();   
+                        imageData = imageData.Concat(imageBytes);
+                    }
+                    
+                    //System.IO.File.WriteAllBytes("outputimage.bmp", imageData.ToArray());
+                    
+                   
+                    
+                    
+                    using(var mStream = new MemoryStream(imageData.ToArray()))
+                    {
+                        //var Image = System.Drawing.Image.FromStream(mStream);
+                        //Image.Save("myoutput.bmp", ImageFormat.Bmp);
+                        
+                        
+                    }
+                    
+                    System.Console.WriteLine("Image saved to file");
+                    
+                    
                 }
             }
 
@@ -69,8 +99,8 @@ namespace KryptonAPI.Controllers
         }
         
         private static object GetData(int taskIndex, int divider){
-            int w = 3000;
-            int h = 2000;
+            int w = 640;
+            int h = 480;
             int startRow = h / divider * taskIndex; 
             var endRow = h / divider * (taskIndex + 1) - 1;
             
