@@ -1,34 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using KryptonAPI.Data.Models;
+using KryptonAPI.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace KryptonAPI.Repository
 {
-    public abstract class Repository<TEntity> : IRepository<TEntity>
+    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
-        public Repository()
+        protected readonly DbContext _context;
+        
+        public Repository(IUnitOfWorkContext unitOfWorkContext)
         {
+            _context = unitOfWorkContext.Context;
         }
 
         public TEntity Add(TEntity entity)
         {
-            throw new NotImplementedException();
+            return _context.Set<TEntity>().Add(entity).Entity;
         }
 
-        public void Delete(long id)
+        public void Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
         }
 
-        public TEntity GetById(long id)
+        public async Task<TEntity> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<TEntity>().SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public TEntity Update(long id, TEntity entity)
+        public TEntity Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            return _context.Set<TEntity>().Update(entity).Entity;
         }
     }
 }

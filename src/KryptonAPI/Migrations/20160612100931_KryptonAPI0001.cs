@@ -45,7 +45,7 @@ namespace KryptonAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tasks",
+                name: "JobItems",
                 columns: table => new
                 {
                     JobItemId = table.Column<long>(nullable: false)
@@ -58,15 +58,15 @@ namespace KryptonAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tasks", x => x.JobItemId);
+                    table.PrimaryKey("PK_JobItems", x => x.JobItemId);
                     table.ForeignKey(
-                        name: "FK_Tasks_Jobs_JobId",
+                        name: "FK_JobItems_Jobs_JobId",
                         column: x => x.JobId,
                         principalTable: "Jobs",
                         principalColumn: "JobId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_Statuses_StatusId",
+                        name: "FK_JobItems_Statuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Statuses",
                         principalColumn: "StatusId",
@@ -79,20 +79,20 @@ namespace KryptonAPI.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_JobId",
-                table: "Tasks",
+                name: "IX_JobItems_JobId",
+                table: "JobItems",
                 column: "JobId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_StatusId",
-                table: "Tasks",
+                name: "IX_JobItems_StatusId",
+                table: "JobItems",
                 column: "StatusId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "JobItems");
 
             migrationBuilder.DropTable(
                 name: "Jobs");

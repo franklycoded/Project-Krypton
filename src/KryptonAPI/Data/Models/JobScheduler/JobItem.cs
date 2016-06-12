@@ -2,7 +2,7 @@ using System;
 
 namespace KryptonAPI.Data.Models.JobScheduler
 {
-    public class JobItem
+    public class JobItem : IEntity
     {
         public long JobItemId { get; set; }
         public long StatusId { get; set; }
@@ -12,5 +12,13 @@ namespace KryptonAPI.Data.Models.JobScheduler
         public Job Job { get; set; }
         public DateTime CreatedUTC { get; set; }
         public DateTime ModifiedUTC { get; set; }
+
+        public long Id
+        {
+            get
+            {
+                return JobItemId;
+            }
+        }
     }
 }

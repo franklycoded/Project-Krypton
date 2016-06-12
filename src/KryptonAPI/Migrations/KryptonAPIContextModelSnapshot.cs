@@ -58,7 +58,7 @@ namespace KryptonAPI.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("JobItems");
                 });
 
             modelBuilder.Entity("KryptonAPI.Data.Models.JobScheduler.Status", b =>

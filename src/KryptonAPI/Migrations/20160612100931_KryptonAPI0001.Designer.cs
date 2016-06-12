@@ -8,7 +8,7 @@ using KryptonAPI.Data;
 namespace KryptonAPI.Migrations
 {
     [DbContext(typeof(KryptonAPIContext))]
-    [Migration("20160611171119_KryptonAPI0001")]
+    [Migration("20160612100931_KryptonAPI0001")]
     partial class KryptonAPI0001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace KryptonAPI.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("JobItems");
                 });
 
             modelBuilder.Entity("KryptonAPI.Data.Models.JobScheduler.Status", b =>

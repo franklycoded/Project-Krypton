@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace KryptonAPI.Repository
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace KryptonAPI.Repository
         /// </summary>
         /// <param name="id">The id of the entity</param>
         /// <returns>The retreived entity</returns>
-        TEntity GetById(long id);
+        Task<TEntity> GetByIdAsync(long id);
         
         /// <summary>
         /// Adds the entity
@@ -20,17 +22,16 @@ namespace KryptonAPI.Repository
         TEntity Add(TEntity entity);
         
         /// <summary>
-        /// Updates the entity specified by the id
+        /// Updates the entity
         /// </summary>
-        /// <param name="id">The id of the entity</param>
         /// <param name="entity">The entity with the updated data</param>
         /// <returns>The updatd entity</returns>
-        TEntity Update(long id, TEntity entity);
+        TEntity Update(TEntity entity);
         
         /// <summary>
-        /// Deletes the entity specified by the id
+        /// Deletes the specified entity
         /// </summary>
-        /// <param name="id">The id of the entity to delete</param>
-        void Delete(long id);
+        /// <param name="entity">The entity to delete</param>
+        void Delete(TEntity entity);
     }
 }
