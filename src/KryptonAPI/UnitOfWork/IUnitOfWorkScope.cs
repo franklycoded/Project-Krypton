@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace KryptonAPI.UnitOfWork
 {
+    /// <summary>
+    /// Interface of the UnitOfWorkScope
+    /// </summary>
     public interface IUnitOfWorkScope : IDisposable
     {
         /// <summary>

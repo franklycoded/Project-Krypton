@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace KryptonAPI.UnitOfWork
 {
+    /// <summary>
+    /// Class to cache and manage the lifetime of resolved UnitOfWorkContexts
+    /// </summary>
     public class UnitOfWorkScope : IUnitOfWorkScope
     {
         private readonly Dictionary<Type, IUnitOfWorkContext> _contextDictionary;

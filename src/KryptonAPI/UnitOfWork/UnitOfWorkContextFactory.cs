@@ -3,8 +3,14 @@ using KryptonAPI.Data;
 
 namespace KryptonAPI.UnitOfWork
 {
+    /// <summary>
+    /// <see cref="IUnitOfWorkContextFactory" />
+    /// </summary>
     public class UnitOfWorkContextFactory : IUnitOfWorkContextFactory
     {
+        /// <summary>
+        /// <see cref="IUnitOfWorkContextFactory.GetContext" />
+        /// </summary>
         public IUnitOfWorkContext GetContext<TContext>()
         {
             switch (typeof(TContext).ToString()){
