@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace KryptonAPI.UnitOfWork
@@ -11,12 +10,19 @@ namespace KryptonAPI.UnitOfWork
         private readonly IUnitOfWorkContextFactory _unitOfWorkContextFactory;
         private readonly object _contextLock = new object();
 
+        /// <summary>
+        /// Creates a new instance of the UnitOfWork context cache
+        /// </summary>
+        /// <param name="unitOfWorkContextFactory">The factory to be used to create UnitOfWorkContexts</param>
         public UnitOfWork(IUnitOfWorkContextFactory unitOfWorkContextFactory)
         {
             _contextDictionary = new Dictionary<Type, IUnitOfWorkContext>();
             _unitOfWorkContextFactory = unitOfWorkContextFactory;
         }
 
+        /// <summary>
+        /// <see cref="IUnitOfWork.GetContext" />
+        /// </summary>
         public IUnitOfWorkContext GetContext<TContext>()
         {
             lock(_contextLock){
@@ -30,6 +36,9 @@ namespace KryptonAPI.UnitOfWork
             }
         }
 
+        /// <summary>
+        /// <see cref="IUnitOfWork.SaveChanges" />
+        /// </summary>
         public void SaveChanges(){
             lock(_contextLock){
                 foreach (var context in _contextDictionary)
@@ -39,6 +48,9 @@ namespace KryptonAPI.UnitOfWork
             }
         }
 
+        /// <summary>
+        /// <see cref="IUnitOfWork.SaveChangesAsync" />
+        /// </summary>
         public Task SaveChangesAsync(){
             var taskList = new List<Task>();
             
@@ -51,5 +63,35 @@ namespace KryptonAPI.UnitOfWork
 
             return Task.WhenAll(taskList);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if(_contextDictionary != null){
+                        foreach (var unityContext in _contextDictionary)
+                        {
+                            unityContext.Value.Context.Dispose();
+                        }
+
+                        _contextDictionary.Clear();
+                    }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }
