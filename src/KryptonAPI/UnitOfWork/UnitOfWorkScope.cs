@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace KryptonAPI.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWorkScope : IUnitOfWorkScope
     {
         private readonly Dictionary<Type, IUnitOfWorkContext> _contextDictionary;
         private readonly IUnitOfWorkContextFactory _unitOfWorkContextFactory;
@@ -14,8 +14,10 @@ namespace KryptonAPI.UnitOfWork
         /// Creates a new instance of the UnitOfWork context cache
         /// </summary>
         /// <param name="unitOfWorkContextFactory">The factory to be used to create UnitOfWorkContexts</param>
-        public UnitOfWork(IUnitOfWorkContextFactory unitOfWorkContextFactory)
+        public UnitOfWorkScope(IUnitOfWorkContextFactory unitOfWorkContextFactory)
         {
+            if(unitOfWorkContextFactory == null) throw new ArgumentNullException(nameof(UnitOfWorkContextFactory));
+            
             _contextDictionary = new Dictionary<Type, IUnitOfWorkContext>();
             _unitOfWorkContextFactory = unitOfWorkContextFactory;
         }
@@ -26,12 +28,12 @@ namespace KryptonAPI.UnitOfWork
         public IUnitOfWorkContext GetContext<TContext>()
         {
             lock(_contextLock){
-                if(_contextDictionary.ContainsKey(typeof(TContext))){
+                if(!_contextDictionary.ContainsKey(typeof(TContext))){
                     var newContext = _unitOfWorkContextFactory.GetContext<TContext>();
                     _contextDictionary.Add(typeof(TContext), newContext);
                     return newContext;
                 }
-
+                
                 return _contextDictionary[typeof(TContext)];
             }
         }

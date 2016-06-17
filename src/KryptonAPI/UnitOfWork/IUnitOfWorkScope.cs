@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace KryptonAPI.UnitOfWork
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWorkScope : IDisposable
     {
         /// <summary>
         /// Gets a new UnitOfWorkContext from the context cache.
