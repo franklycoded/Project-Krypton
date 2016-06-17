@@ -26,7 +26,7 @@ namespace KryptonAPI.UnitOfWork
         }
 
         /// <summary>
-        /// <see cref="IUnitOfWork.GetContext" />
+        /// <see cref="IUnitOfWorkScope.GetContext" />
         /// </summary>
         public IUnitOfWorkContext GetContext<TContext>()
         {
