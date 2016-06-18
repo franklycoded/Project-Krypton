@@ -12,8 +12,6 @@ using KryptonAPI.UnitOfWork;
 using KryptonAPI.Repository;
 using KryptonAPI.Service.JobScheduler;
 using KryptonAPI.DataContractMappers;
-using KryptonAPI.DataContracts.JobScheduler;
-using KryptonAPI.Data.Models.JobScheduler;
 
 namespace KryptonAPI
 {
