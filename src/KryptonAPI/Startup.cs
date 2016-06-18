@@ -11,6 +11,9 @@ using System.Security.Claims;
 using KryptonAPI.UnitOfWork;
 using KryptonAPI.Repository;
 using KryptonAPI.Service.JobScheduler;
+using KryptonAPI.DataContractMappers;
+using KryptonAPI.DataContracts.JobScheduler;
+using KryptonAPI.Data.Models.JobScheduler;
 
 namespace KryptonAPI
 {
@@ -37,13 +40,16 @@ namespace KryptonAPI
             // Adding Auth0 settings to services
             services.Configure<Auth0Config>(Configuration.GetSection("Auth0Config"));
             
-            // Registering CRUD middleware
+            // Registering uow and repository layer
             services.AddSingleton<IUnitOfWorkContextFactory, UnitOfWorkContextFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWorkScope>();
             services.AddScoped<IUnitOfWorkScope, UnitOfWorkScope>((serviceProvider) => {
                 return serviceProvider.GetService<IUnitOfWork>() as UnitOfWorkScope;
             });
             services.AddScoped<IKryptonAPIRepositoryFactory, KryptonAPIRepositoryFactory>();
+
+            // Registering service layer
+            services.AddSingleton<IDataContractMapperFactory, DataContractMapperFactory>();
             services.AddScoped<IJobItemsManager, JobItemsManager>();
             
             // Configuring cors

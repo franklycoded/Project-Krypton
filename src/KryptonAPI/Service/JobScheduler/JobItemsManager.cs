@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using KryptonAPI.Data.Models.JobScheduler;
+using KryptonAPI.DataContractMappers;
 using KryptonAPI.DataContracts.JobScheduler;
 using KryptonAPI.Repository;
 using KryptonAPI.UnitOfWork;
@@ -11,14 +12,17 @@ namespace KryptonAPI.Service.JobScheduler
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IKryptonAPIRepositoryFactory _repositoryFactory;
+        private readonly IDataContractMapperFactory _dataContractMapperFactory;
         
-        public JobItemsManager(IUnitOfWork unitOfWork, IKryptonAPIRepositoryFactory repositoryFactory)
+        public JobItemsManager(IUnitOfWork unitOfWork, IKryptonAPIRepositoryFactory repositoryFactory, IDataContractMapperFactory dataContractMapperFactory)
         {
             if(unitOfWork == null) throw new ArgumentNullException(nameof(unitOfWork));
             if(repositoryFactory == null) throw new ArgumentNullException(nameof(repositoryFactory));
+            if(dataContractMapperFactory == null) throw new ArgumentNullException(nameof(dataContractMapperFactory));
 
             _unitOfWork = unitOfWork;
             _repositoryFactory = repositoryFactory;
+            _dataContractMapperFactory = dataContractMapperFactory;
         }
 
         public Task<JobItemDto> Add(JobItemDto jobItemDto)
@@ -37,18 +41,10 @@ namespace KryptonAPI.Service.JobScheduler
             var jobItem = await repo.GetByIdAsync(id);
 
             if(jobItem !=null){
-                return new JobItemDto(){
-                    JobItemId = jobItem.JobItemId,
-                    StatusId = jobItem.StatusId,
-                    JsonResult = jobItem.JsonResult,
-                    JobId = jobItem.JobId,
-                    CreatedUTC = jobItem.CreatedUTC,
-                    ModifiedUTC = jobItem.ModifiedUTC
-                };
+                return _dataContractMapperFactory.MapEntityToDto(jobItem);
             }
 
             return null;
-            
         }
 
         public Task<JobItemDto> Update(JobItemDto jobItemDto)
