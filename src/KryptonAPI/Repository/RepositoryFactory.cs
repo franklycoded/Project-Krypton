@@ -9,7 +9,7 @@ namespace KryptonAPI.Repository
     /// </summary>
     public class RepositoryFactory<TContext> : IRepositoryFactory<TContext>
     {
-        private readonly IUnitOfWorkScope _unitOfWorkScope;
+        protected readonly IUnitOfWorkScope _unitOfWorkScope;
         
         /// <summary>
         /// Creates a new instance of the Repository Factory
@@ -22,15 +22,12 @@ namespace KryptonAPI.Repository
             _unitOfWorkScope = unitOfWorkScope;
         }
 
+        /// <summary>
+        /// <see cref="IRepositoryFactory.GetRepository<TEntity>" />
+        /// </summary>
         public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class, IEntity
         {
             return new Repository<TEntity>(_unitOfWorkScope.GetContext<TContext>());
-        }
-
-        // inject some sort of resolver here
-        public TRepository GetRepository<TEntity, TRepository>()
-        {
-            throw new NotImplementedException();
         }
     }
 }
