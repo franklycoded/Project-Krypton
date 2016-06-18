@@ -19,7 +19,7 @@ namespace KryptonAPI.UnitOfWork
         /// <param name="unitOfWorkContextFactory">The factory to be used to create UnitOfWorkContexts</param>
         public UnitOfWorkScope(IUnitOfWorkContextFactory unitOfWorkContextFactory)
         {
-            if(unitOfWorkContextFactory == null) throw new ArgumentNullException(nameof(UnitOfWorkContextFactory));
+            if(unitOfWorkContextFactory == null) throw new ArgumentNullException(nameof(unitOfWorkContextFactory));
             
             _contextDictionary = new Dictionary<Type, IUnitOfWorkContext>();
             _unitOfWorkContextFactory = unitOfWorkContextFactory;

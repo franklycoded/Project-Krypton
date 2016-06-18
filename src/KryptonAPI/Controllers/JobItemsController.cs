@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using KryptonAPI.DataContracts;
+using KryptonAPI.Service.JobScheduler;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -14,14 +16,20 @@ namespace KryptonAPI.Controllers
     [Route("api/jobitems")]
     public class JobItemsController : Controller
     {    
-        static JobItemsController() {
-            
+        private readonly IJobItemsManager _jobItemsManager;
+        
+        public JobItemsController(IJobItemsManager jobItemsManager){
+            _jobItemsManager = jobItemsManager;
         }
         
         [HttpGet("{id}")]
         //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
-        public IActionResult GetById(long id){
-            return Ok("test result");
+        public async Task<IActionResult> GetById(long id){
+            var jobItemDto = await _jobItemsManager.GetById(id);
+
+            if(jobItemDto == null) return NotFound();
+
+            return Ok(jobItemDto);
         }
 
         [HttpPut("{id}")]

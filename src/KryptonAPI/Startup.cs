@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using KryptonAPI.UnitOfWork;
+using KryptonAPI.Repository;
+using KryptonAPI.Service.JobScheduler;
 
 namespace KryptonAPI
 {
@@ -28,14 +31,20 @@ namespace KryptonAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            
             // Setup options with DI
             services.AddOptions();
 
             // Adding Auth0 settings to services
             services.Configure<Auth0Config>(Configuration.GetSection("Auth0Config"));
             
+            // Registering CRUD middleware
+            services.AddSingleton<IUnitOfWorkContextFactory, UnitOfWorkContextFactory>();
+            services.AddScoped<IUnitOfWork, UnitOfWorkScope>();
+            services.AddScoped<IUnitOfWorkScope, UnitOfWorkScope>((serviceProvider) => {
+                return serviceProvider.GetService<IUnitOfWork>() as UnitOfWorkScope;
+            });
+            services.AddScoped<IKryptonAPIRepositoryFactory, KryptonAPIRepositoryFactory>();
+            services.AddScoped<IJobItemsManager, JobItemsManager>();
             
             // Configuring cors
             services.AddCors(options => {

@@ -17,7 +17,7 @@ namespace KryptonAPI.Repository
         /// <param name="unitOfWorkScope">The unit of work scope to use to retrieve UnitOfWorkContexts</param>
         public RepositoryFactory(IUnitOfWorkScope unitOfWorkScope)
         {
-            if(_unitOfWorkScope == null) throw new ArgumentNullException(nameof(unitOfWorkScope));
+            if(unitOfWorkScope == null) throw new ArgumentNullException(nameof(unitOfWorkScope));
             
             _unitOfWorkScope = unitOfWorkScope;
         }

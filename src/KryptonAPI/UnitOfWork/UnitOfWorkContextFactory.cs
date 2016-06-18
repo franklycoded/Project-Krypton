@@ -13,12 +13,11 @@ namespace KryptonAPI.UnitOfWork
         /// </summary>
         public IUnitOfWorkContext GetContext<TContext>()
         {
-            switch (typeof(TContext).ToString()){
-                case "KryptonAPIContext":
-                    return new UnitOfWorkContext(new KryptonAPIContext());
-                default:
-                    throw new Exception("Can't create UnitOfWorkContext for context type " + typeof(TContext).ToString());
+            if(typeof(TContext) == typeof(KryptonAPIContext)){
+                return new UnitOfWorkContext(new KryptonAPIContext());
             }
+
+            throw new Exception("Can't create UnitOfWorkContext for context type " + typeof(TContext).ToString());
         }
     }
 }
