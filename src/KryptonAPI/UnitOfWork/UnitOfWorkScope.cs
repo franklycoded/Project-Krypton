@@ -34,6 +34,7 @@ namespace KryptonAPI.UnitOfWork
                 if(!_contextDictionary.ContainsKey(typeof(TContext))){
                     var newContext = _unitOfWorkContextFactory.GetContext<TContext>();
                     _contextDictionary.Add(typeof(TContext), newContext);
+                    
                     return newContext;
                 }
                 

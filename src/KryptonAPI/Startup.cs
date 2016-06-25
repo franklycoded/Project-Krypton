@@ -49,6 +49,9 @@ namespace KryptonAPI
                 return serviceProvider.GetService<IUnitOfWork>() as UnitOfWorkScope;
             });
             services.AddScoped<IRepositoryFactory<KryptonAPIContext>, RepositoryFactory<KryptonAPIContext>>();
+            services.AddScoped<IRepository<JobItem>, Repository<JobItem>>((serviceProvider) => {
+                return serviceProvider.GetService<IRepositoryFactory<KryptonAPIContext>>().GetRepository<JobItem>() as Repository<JobItem>;
+            });
 
             // Registering service layer
             //services.AddSingleton<IDataContractMapperFactory, DataContractMapperFactory>();

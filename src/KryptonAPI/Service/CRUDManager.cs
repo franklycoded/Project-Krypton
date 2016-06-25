@@ -14,7 +14,7 @@ namespace KryptonAPI.Service
     where TDto: class
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IRepositoryFactory<TContext> _repositoryFactory;
+        private readonly IRepository<TEntity> _repository;
         private readonly IDataContractMapper<TEntity, TDto> _dataContractMapper;
 
         /// <summary>
@@ -23,14 +23,14 @@ namespace KryptonAPI.Service
         /// <param name="unitOfWork">The unit of work instance to use for persistence</param>
         /// <param name="repositoryFactory">The factory for creating repositories</param>
         /// <param name="dataContractMapper">The dto mapper</param>
-        public CRUDManager(IUnitOfWork unitOfWork, IRepositoryFactory<TContext> repositoryFactory, IDataContractMapper<TEntity, TDto> dataContractMapper)
+        public CRUDManager(IUnitOfWork unitOfWork, IRepository<TEntity> repository, IDataContractMapper<TEntity, TDto> dataContractMapper)
         {
             // if(unitOfWork == null) throw new ArgumentNullException(nameof(unitOfWork));
             // if(repositoryFactory == null) throw new ArgumentNullException(nameof(repositoryFactory));
             // if(dataContractMapper == null) throw new ArgumentNullException(nameof(dataContractMapper));
 
             _unitOfWork = unitOfWork;
-            _repositoryFactory = repositoryFactory;
+            _repository = repository;
             _dataContractMapper = dataContractMapper;
         }
 
@@ -46,8 +46,7 @@ namespace KryptonAPI.Service
 
         public async Task<TDto> GetById(long id)
         {
-            var repo = _repositoryFactory.GetRepository<TEntity>();
-            var jobItem = await repo.GetByIdAsync(id);
+            var jobItem = await _repository.GetByIdAsync(id);
 
             if(jobItem !=null){
                 return _dataContractMapper.MapEntityToDto(jobItem);
