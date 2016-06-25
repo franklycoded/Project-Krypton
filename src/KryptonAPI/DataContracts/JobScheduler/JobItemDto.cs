@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace KryptonAPI.DataContracts.JobScheduler
 {
     [DataContract]
-    public class JobItemDto
+    public class JobItemDto : ICRUDDto
     {
         [DataMember]
         public long Id { get; set; }

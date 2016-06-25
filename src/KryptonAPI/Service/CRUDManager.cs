@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using KryptonAPI.Data.Models;
 using KryptonAPI.DataContractMappers;
+using KryptonAPI.DataContracts;
 using KryptonAPI.Repository;
 using KryptonAPI.UnitOfWork;
 
@@ -11,7 +12,7 @@ namespace KryptonAPI.Service
     /// <see cref="ICRUDManager" />
     /// </summary>
     public class CRUDManager<TContext, TEntity, TDto> : ICRUDManager<TEntity, TDto> where TContext : class where TEntity : class, IEntity 
-    where TDto: class
+    where TDto: class, ICRUDDto
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<TEntity> _repository;
@@ -40,16 +41,16 @@ namespace KryptonAPI.Service
         public async Task<TDto> AddAsync(TDto dto)
         {
             if(dto == null) throw new ArgumentNullException(nameof(dto));
-
+            
+            // Making sure that Id is 0 and the date fields are generated on the server
+            dto.Id = 0;
+            dto.CreatedUTC = DateTime.UtcNow;
+            dto.ModifiedUTC = DateTime.UtcNow;
+            
             var newEntity = _dataContractMapper.MapDtoToEntity(dto);
 
-            newEntity.CreatedUTC = DateTime.UtcNow;
-            newEntity.ModifiedUTC = DateTime.UtcNow;
-
             _repository.Add(newEntity);
-            System.Console.WriteLine("before save");
             await _unitOfWork.SaveChangesAsync();
-            System.Console.WriteLine("returning result");
             return _dataContractMapper.MapEntityToDto(newEntity);
         }
 
@@ -80,7 +81,21 @@ namespace KryptonAPI.Service
         /// </summary>
         public async Task<TDto> UpdateAsync(TDto dto)
         {
-            throw new NotImplementedException();
+            if(dto == null) throw new ArgumentNullException(nameof(dto));
+
+            var entity = await _repository.GetByIdAsync(dto.Id);
+
+            if(entity == null) return null;
+
+            // Making sure the createdutc date can't be modified and the modifyutc date gets updated
+            dto.CreatedUTC = entity.CreatedUTC;
+            dto.ModifiedUTC = DateTime.UtcNow;
+
+            entity = _dataContractMapper.MapDtoToEntity(dto, entity);
+            
+            _repository.Update(entity);
+            await _unitOfWork.SaveChangesAsync();
+            return _dataContractMapper.MapEntityToDto(entity);
         }
     }
 }

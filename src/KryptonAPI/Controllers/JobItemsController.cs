@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using KryptonAPI.Data.Models.JobScheduler;
-using KryptonAPI.DataContracts;
 using KryptonAPI.DataContracts.JobScheduler;
 using KryptonAPI.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -21,25 +20,48 @@ namespace KryptonAPI.Controllers
         [HttpGet("{id}")]
         //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetById(long id){
-            var jobItemDto = await _jobItemsManager.GetByIdAsync(id);
+            try {
+                var jobItemDto = await _jobItemsManager.GetByIdAsync(id);
 
-            if(jobItemDto == null) return NotFound();
+                if(jobItemDto == null) return NotFound();
 
-            return Ok(jobItemDto);
+                return Ok(jobItemDto);
+            }
+            catch(Exception ex){
+                // Log error
+                return StatusCode(500);
+            }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
-        public IActionResult Put(long id, [FromBody] JobResultDto jobResult){
-            
-            
-            return Ok(jobResult);
+        public async Task<IActionResult> Put([FromBody] JobItemDto jobItemDto){
+            try {
+                var updatedJobItem = await _jobItemsManager.UpdateAsync(jobItemDto);
+
+                if(updatedJobItem == null) return NotFound();
+
+                return Ok(jobItemDto);   
+            }
+            catch(Exception ex){
+                // Log error
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
+        //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Post([FromBody] JobItemDto jobItemDto){
-            var newJobItem = await _jobItemsManager.AddAsync(jobItemDto);
-            return Ok(newJobItem);
+            try
+            {
+                var newJobItem = await _jobItemsManager.AddAsync(jobItemDto);
+                return Ok(newJobItem);   
+            }
+            catch (Exception ex)
+            {
+                // log error
+                return StatusCode(500);
+            }
         }
         
         private static object GetData(int taskIndex, int divider){

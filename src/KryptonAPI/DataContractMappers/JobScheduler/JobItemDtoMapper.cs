@@ -1,4 +1,3 @@
-using System;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 
@@ -7,36 +6,24 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
     /// <summary>
     /// <see cref="IDataContractMapper" />
     /// </summary>
-    public class JobItemDtoMapper : IDataContractMapper<JobItem, JobItemDto>
+    public class JobItemDtoMapper : DataContractMapper<JobItem, JobItemDto>
     {
-        /// <summary>
-        /// <see cref="IDataContractMapper.MapDtoToEntity" />
-        /// </summary>
-        public JobItem MapDtoToEntity(JobItemDto dto)
+        protected override JobItem OnMapDtoToEntity(JobItemDto dto, JobItem entity)
         {
-            return new JobItem(){
-                Id = dto.Id,
-                StatusId = dto.StatusId,
-                JsonResult = dto.JsonResult,
-                JobId = dto.JobId,
-                CreatedUTC = dto.CreatedUTC,
-                ModifiedUTC = dto.ModifiedUTC
-            };
+            entity.StatusId = dto.StatusId;
+            entity.JsonResult = dto.JsonResult;
+            entity.JobId = dto.JobId;
+
+            return entity;
         }
 
-        /// <summary>
-        /// <see cref="IDataContractMapper.MapEntityToDto" />
-        /// </summary>
-        public JobItemDto MapEntityToDto(JobItem entity)
+        protected override JobItemDto OnMapEntityToDto(JobItem entity, JobItemDto dto)
         {
-            return new JobItemDto(){
-                    Id = entity.Id,
-                    StatusId = entity.StatusId,
-                    JsonResult = entity.JsonResult,
-                    JobId = entity.JobId,
-                    CreatedUTC = entity.CreatedUTC,
-                    ModifiedUTC = entity.ModifiedUTC
-                };
+            dto.StatusId = entity.StatusId;
+            dto.JsonResult = entity.JsonResult;
+            dto.JobId = entity.JobId;
+
+            return dto;
         }
     }
 }
