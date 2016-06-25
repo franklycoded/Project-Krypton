@@ -21,13 +21,13 @@ namespace KryptonAPI.Service
         /// Creates a new instance of the CRUD Manager
         /// </summary>
         /// <param name="unitOfWork">The unit of work instance to use for persistence</param>
-        /// <param name="repositoryFactory">The factory for creating repositories</param>
+        /// <param name="repository">The repository to use for data persistence</param>
         /// <param name="dataContractMapper">The dto mapper</param>
         public CRUDManager(IUnitOfWork unitOfWork, IRepository<TEntity> repository, IDataContractMapper<TEntity, TDto> dataContractMapper)
         {
-            // if(unitOfWork == null) throw new ArgumentNullException(nameof(unitOfWork));
-            // if(repositoryFactory == null) throw new ArgumentNullException(nameof(repositoryFactory));
-            // if(dataContractMapper == null) throw new ArgumentNullException(nameof(dataContractMapper));
+            if(unitOfWork == null) throw new ArgumentNullException(nameof(unitOfWork));
+            if(repository == null) throw new ArgumentNullException(nameof(repository));
+            if(dataContractMapper == null) throw new ArgumentNullException(nameof(dataContractMapper));
 
             _unitOfWork = unitOfWork;
             _repository = repository;
