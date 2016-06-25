@@ -8,7 +8,7 @@ using KryptonAPI.Data;
 namespace KryptonAPI.Migrations
 {
     [DbContext(typeof(KryptonAPIContext))]
-    [Migration("20160612100931_KryptonAPI0001")]
+    [Migration("20160625160245_KryptonAPI0001")]
     partial class KryptonAPI0001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace KryptonAPI.Migrations
 
             modelBuilder.Entity("KryptonAPI.Data.Models.JobScheduler.Job", b =>
                 {
-                    b.Property<long>("JobId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedUTC");
@@ -31,7 +31,7 @@ namespace KryptonAPI.Migrations
 
                     b.Property<long>("UserId");
 
-                    b.HasKey("JobId");
+                    b.HasKey("Id");
 
                     b.HasIndex("StatusId");
 
@@ -40,7 +40,7 @@ namespace KryptonAPI.Migrations
 
             modelBuilder.Entity("KryptonAPI.Data.Models.JobScheduler.JobItem", b =>
                 {
-                    b.Property<long>("JobItemId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedUTC");
@@ -53,7 +53,7 @@ namespace KryptonAPI.Migrations
 
                     b.Property<long>("StatusId");
 
-                    b.HasKey("JobItemId");
+                    b.HasKey("Id");
 
                     b.HasIndex("JobId");
 
@@ -64,12 +64,16 @@ namespace KryptonAPI.Migrations
 
             modelBuilder.Entity("KryptonAPI.Data.Models.JobScheduler.Status", b =>
                 {
-                    b.Property<long>("StatusId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedUTC");
+
+                    b.Property<DateTime>("ModifiedUTC");
 
                     b.Property<string>("Name");
 
-                    b.HasKey("StatusId");
+                    b.HasKey("Id");
 
                     b.ToTable("Statuses");
                 });

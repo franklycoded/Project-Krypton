@@ -7,7 +7,7 @@ namespace KryptonAPI.DataContracts.JobScheduler
     public class JobItemDto
     {
         [DataMember]
-        public long JobItemId { get; set; }
+        public long Id { get; set; }
         
         [DataMember]
         public long StatusId { get; set; }

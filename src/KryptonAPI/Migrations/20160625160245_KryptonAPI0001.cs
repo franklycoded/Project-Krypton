@@ -12,20 +12,22 @@ namespace KryptonAPI.Migrations
                 name: "Statuses",
                 columns: table => new
                 {
-                    StatusId = table.Column<long>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("Autoincrement", true),
+                    CreatedUTC = table.Column<DateTime>(nullable: false),
+                    ModifiedUTC = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Statuses", x => x.StatusId);
+                    table.PrimaryKey("PK_Statuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Jobs",
                 columns: table => new
                 {
-                    JobId = table.Column<long>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("Autoincrement", true),
                     CreatedUTC = table.Column<DateTime>(nullable: false),
                     FinalResult = table.Column<byte[]>(nullable: true),
@@ -35,12 +37,12 @@ namespace KryptonAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Jobs", x => x.JobId);
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Jobs_Statuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Statuses",
-                        principalColumn: "StatusId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -48,7 +50,7 @@ namespace KryptonAPI.Migrations
                 name: "JobItems",
                 columns: table => new
                 {
-                    JobItemId = table.Column<long>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("Autoincrement", true),
                     CreatedUTC = table.Column<DateTime>(nullable: false),
                     JobId = table.Column<long>(nullable: false),
@@ -58,18 +60,18 @@ namespace KryptonAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobItems", x => x.JobItemId);
+                    table.PrimaryKey("PK_JobItems", x => x.Id);
                     table.ForeignKey(
                         name: "FK_JobItems_Jobs_JobId",
                         column: x => x.JobId,
                         principalTable: "Jobs",
-                        principalColumn: "JobId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_JobItems_Statuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Statuses",
-                        principalColumn: "StatusId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 

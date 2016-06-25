@@ -34,20 +34,40 @@ namespace KryptonAPI.Service
             _dataContractMapper = dataContractMapper;
         }
 
-        public Task<TDto> Add(TDto dto)
+        /// <summary>
+        /// <see cref="ICRUDManager.AddAsync" />
+        /// </summary>
+        public async Task<TDto> AddAsync(TDto dto)
+        {
+            if(dto == null) throw new ArgumentNullException(nameof(dto));
+
+            var newEntity = _dataContractMapper.MapDtoToEntity(dto);
+
+            newEntity.CreatedUTC = DateTime.UtcNow;
+            newEntity.ModifiedUTC = DateTime.UtcNow;
+
+            _repository.Add(newEntity);
+            System.Console.WriteLine("before save");
+            await _unitOfWork.SaveChangesAsync();
+            System.Console.WriteLine("returning result");
+            return _dataContractMapper.MapEntityToDto(newEntity);
+        }
+
+        /// <summary>
+        /// <see cref="ICRUDManager.DeleteAsync" />
+        /// </summary>
+        public async Task<bool> DeleteAsync(long id)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TDto> GetById(long id)
+        /// <summary>
+        /// <see cref="ICRUDManager.GetByIdAsync" />
+        /// </summary>
+        public async Task<TDto> GetByIdAsync(long id)
         {
             var jobItem = await _repository.GetByIdAsync(id);
-
+            
             if(jobItem !=null){
                 return _dataContractMapper.MapEntityToDto(jobItem);
             }
@@ -55,7 +75,10 @@ namespace KryptonAPI.Service
             return null;
         }
 
-        public Task<TDto> Update(TDto dto)
+        /// <summary>
+        /// <see cref="ICRUDManager.UpdateAsync" />
+        /// </summary>
+        public async Task<TDto> UpdateAsync(TDto dto)
         {
             throw new NotImplementedException();
         }

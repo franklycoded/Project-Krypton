@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KryptonAPI.Data.Models;
 using KryptonAPI.DataContractMappers;
 using KryptonAPI.Repository;
@@ -14,13 +11,9 @@ namespace KryptonAPI.Test.Service
 {
     public class TestEntity : IEntity
     {
-        public long Id
-        {
-            get
-            {
-                return 1;
-            }
-        }
+        public long Id { get; set; }
+        public DateTime CreatedUTC { get; set; }
+        public DateTime ModifiedUTC { get; set; }
     }
 
     public class TestDto {
@@ -72,7 +65,7 @@ namespace KryptonAPI.Test.Service
 
             var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
 
-            var result = manager.GetById(1);
+            var result = manager.GetByIdAsync(1);
 
             Assert.IsNull(result.Result);
         }
@@ -88,11 +81,56 @@ namespace KryptonAPI.Test.Service
 
             var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
 
-            var result = manager.GetById(1);
+            var result = manager.GetByIdAsync(1);
 
             Assert.IsNotNull(result.Result);
             Assert.IsTrue(result.Result == testDto);
             _mockDataContractMapper.Verify(m => m.MapEntityToDto(testEntity), Times.Once);
+        }
+
+        [Test]
+        public void Test_Add_NullDto_ArgumentNullException(){
+            var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
+
+            Assert.Throws<AggregateException>(() => {
+                var res = manager.AddAsync(null).Result;
+            });
+        }
+
+        [Test]
+        public void Test_Add_EntityMapped_DtoReturned(){
+            var testEntity = new TestEntity();
+            var testDto = new TestDto();
+
+            _mockDataContractMapper.Setup(m => m.MapDtoToEntity(It.IsAny<TestDto>())).Returns(testEntity);
+
+            _mockDataContractMapper.Setup(m => m.MapEntityToDto(testEntity)).Returns(testDto);
+
+            var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
+
+            var result = manager.AddAsync(new TestDto()).Result;
+
+            Assert.IsTrue(result == testDto);
+            _mockRepository.Verify(m => m.Add(testEntity), Times.Once);
+            _mockUnitOfWork.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
+
+        [Test]
+        public void Test_Add_Created_And_Modified_Dates_Provided(){
+            var testEntity = new TestEntity();
+            var testDto = new TestDto();
+
+            _mockDataContractMapper.Setup(m => m.MapDtoToEntity(It.IsAny<TestDto>())).Returns(testEntity);
+
+            _mockDataContractMapper.Setup(m => m.MapEntityToDto(testEntity)).Returns(testDto);
+
+            var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
+
+            var result = manager.AddAsync(new TestDto()).Result;
+
+            Assert.IsTrue(testEntity.CreatedUTC.Year == DateTime.UtcNow.Year && testEntity.CreatedUTC.Month == DateTime.UtcNow.Month && testEntity.CreatedUTC.Day == DateTime.UtcNow.Day);
+
+            Assert.IsTrue(testEntity.ModifiedUTC.Year == DateTime.UtcNow.Year && testEntity.ModifiedUTC.Month == DateTime.UtcNow.Month && testEntity.ModifiedUTC.Day == DateTime.UtcNow.Day);
         }
     }
 }

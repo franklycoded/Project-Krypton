@@ -14,7 +14,14 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
         /// </summary>
         public JobItem MapDtoToEntity(JobItemDto dto)
         {
-            throw new NotImplementedException();
+            return new JobItem(){
+                Id = dto.Id,
+                StatusId = dto.StatusId,
+                JsonResult = dto.JsonResult,
+                JobId = dto.JobId,
+                CreatedUTC = dto.CreatedUTC,
+                ModifiedUTC = dto.ModifiedUTC
+            };
         }
 
         /// <summary>
@@ -23,7 +30,7 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
         public JobItemDto MapEntityToDto(JobItem entity)
         {
             return new JobItemDto(){
-                    JobItemId = entity.JobItemId,
+                    Id = entity.Id,
                     StatusId = entity.StatusId,
                     JsonResult = entity.JsonResult,
                     JobId = entity.JobId,

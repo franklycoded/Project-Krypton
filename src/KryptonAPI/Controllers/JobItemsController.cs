@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts;
@@ -20,7 +21,7 @@ namespace KryptonAPI.Controllers
         [HttpGet("{id}")]
         //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetById(long id){
-            var jobItemDto = await _jobItemsManager.GetById(id);
+            var jobItemDto = await _jobItemsManager.GetByIdAsync(id);
 
             if(jobItemDto == null) return NotFound();
 
@@ -29,10 +30,16 @@ namespace KryptonAPI.Controllers
 
         [HttpPut("{id}")]
         //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
-        public IActionResult PutResult(long id, [FromBody] JobResultDto jobResult){
+        public IActionResult Put(long id, [FromBody] JobResultDto jobResult){
             
             
             return Ok(jobResult);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] JobItemDto jobItemDto){
+            var newJobItem = await _jobItemsManager.AddAsync(jobItemDto);
+            return Ok(newJobItem);
         }
         
         private static object GetData(int taskIndex, int divider){
