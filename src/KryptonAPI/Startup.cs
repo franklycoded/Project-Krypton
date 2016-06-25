@@ -10,8 +10,12 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using KryptonAPI.UnitOfWork;
 using KryptonAPI.Repository;
-using KryptonAPI.Service.JobScheduler;
 using KryptonAPI.DataContractMappers;
+using KryptonAPI.Data;
+using KryptonAPI.Service;
+using KryptonAPI.DataContracts.JobScheduler;
+using KryptonAPI.Data.Models.JobScheduler;
+using KryptonAPI.DataContractMappers.JobScheduler;
 
 namespace KryptonAPI
 {
@@ -44,11 +48,12 @@ namespace KryptonAPI
             services.AddScoped<IUnitOfWorkScope, UnitOfWorkScope>((serviceProvider) => {
                 return serviceProvider.GetService<IUnitOfWork>() as UnitOfWorkScope;
             });
-            services.AddScoped<IKryptonAPIRepositoryFactory, KryptonAPIRepositoryFactory>();
+            services.AddScoped<IRepositoryFactory<KryptonAPIContext>, RepositoryFactory<KryptonAPIContext>>();
 
             // Registering service layer
-            services.AddSingleton<IDataContractMapperFactory, DataContractMapperFactory>();
-            services.AddScoped<IJobItemsManager, JobItemsManager>();
+            //services.AddSingleton<IDataContractMapperFactory, DataContractMapperFactory>();
+            services.AddSingleton<IDataContractMapper<JobItem, JobItemDto>, JobItemDtoMapper>();
+            services.AddScoped<ICRUDManager<JobItem, JobItemDto>, CRUDManager<KryptonAPIContext, JobItem, JobItemDto>>();
             
             // Configuring cors
             services.AddCors(options => {

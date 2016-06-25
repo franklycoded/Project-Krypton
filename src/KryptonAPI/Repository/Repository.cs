@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using KryptonAPI.Data.Models;
 using KryptonAPI.UnitOfWork;
@@ -11,6 +12,8 @@ namespace KryptonAPI.Repository
         
         public Repository(IUnitOfWorkContext unitOfWorkContext)
         {
+            if(unitOfWorkContext == null) throw new ArgumentNullException(nameof(unitOfWorkContext));
+            
             _context = unitOfWorkContext.Context;
         }
 

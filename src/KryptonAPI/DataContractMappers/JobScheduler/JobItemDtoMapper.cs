@@ -2,15 +2,15 @@ using System;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 
-namespace KryptonAPI.DataContractMappers
+namespace KryptonAPI.DataContractMappers.JobScheduler
 {
     /// <summary>
-    /// <see cref="IDataContractMapperFactory" />
+    /// <see cref="IDataContractMapper" />
     /// </summary>
-    public class DataContractMapperFactory : IDataContractMapperFactory
+    public class JobItemDtoMapper : IDataContractMapper<JobItem, JobItemDto>
     {
         /// <summary>
-        /// <see cref="IDataContractMapper<JobItem, JobItemDto>.MapDtoToEntity" />
+        /// <see cref="IDataContractMapper.MapDtoToEntity" />
         /// </summary>
         public JobItem MapDtoToEntity(JobItemDto dto)
         {
@@ -18,7 +18,7 @@ namespace KryptonAPI.DataContractMappers
         }
 
         /// <summary>
-        /// <see cref="IDataContractMapper<JobItem, JobItemDto>.MapEntityToDto" />
+        /// <see cref="IDataContractMapper.MapEntityToDto" />
         /// </summary>
         public JobItemDto MapEntityToDto(JobItem entity)
         {

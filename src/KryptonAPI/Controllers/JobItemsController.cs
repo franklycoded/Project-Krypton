@@ -1,24 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts;
-using KryptonAPI.Service.JobScheduler;
-using Microsoft.AspNetCore.Authorization;
+using KryptonAPI.DataContracts.JobScheduler;
+using KryptonAPI.Service;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace KryptonAPI.Controllers
 {
     [Route("api/jobitems")]
     public class JobItemsController : Controller
     {    
-        private readonly IJobItemsManager _jobItemsManager;
+        private readonly ICRUDManager<JobItem, JobItemDto> _jobItemsManager;
         
-        public JobItemsController(IJobItemsManager jobItemsManager){
+        public JobItemsController(ICRUDManager<JobItem, JobItemDto> jobItemsManager){
             _jobItemsManager = jobItemsManager;
         }
         
