@@ -6,17 +6,22 @@ using KryptonAPI.Service;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace KryptonAPI.Controllers
+namespace KryptonAPI.Controllers.JobScheduler
 {
     [Route("api/jobitems")]
-    public class JobItemsController : Controller
+    public class JobItemsController : CRUDController<JobItem, JobItemDto>
     {    
         private readonly ICRUDManager<JobItem, JobItemDto> _jobItemsManager;
         
-        public JobItemsController(ICRUDManager<JobItem, JobItemDto> jobItemsManager){
+        public JobItemsController(ICRUDManager<JobItem, JobItemDto> jobItemsManager) : base(jobItemsManager){
             _jobItemsManager = jobItemsManager;
         }
         
+        // public override async Task<IActionResult> GetById(long id){
+        //     return await base.GetById(id);
+        // } 
+
+        /*
         [HttpGet("{id}")]
         //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetById(long id){
@@ -81,7 +86,7 @@ namespace KryptonAPI.Controllers
                 return StatusCode(500, "Error while deleting JobItem with id " + id + ". See logs for details!");
             }
         }
-
+*/
         private static object GetData(int taskIndex, int divider){
             int w = 640;
             int h = 480;
