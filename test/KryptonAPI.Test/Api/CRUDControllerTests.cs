@@ -161,5 +161,42 @@ namespace KryptonAPI.Test.Api
             Assert.IsTrue(result.StatusCode == 500);
             _mockCRUDManager.Verify(m => m.UpdateAsync(testDto), Times.Once);
         }
+
+        [Test]
+        public void Test_Delete_Success_Return_200(){
+            _mockCRUDManager.Setup(m => m.DeleteAsync(1)).ReturnsAsync(true);
+
+            var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
+
+            var result = controller.Delete(1).Result;
+
+            Assert.IsTrue(result is OkResult);
+            _mockCRUDManager.Verify(m => m.DeleteAsync(1), Times.Once);
+        }
+
+        [Test]
+        public void Test_Delete_NotFound_Return_404()
+        {
+            _mockCRUDManager.Setup(m => m.DeleteAsync(1)).ReturnsAsync(false);
+
+            var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
+
+            var result = controller.Delete(1).Result;
+
+            Assert.IsTrue(result is NotFoundResult);
+            _mockCRUDManager.Verify(m => m.DeleteAsync(1), Times.Once);
+        }
+
+        [Test]
+        public void Test_Delete_Error_Return_500(){
+            _mockCRUDManager.Setup(m => m.DeleteAsync(1)).ThrowsAsync(new Exception());
+
+            var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
+
+            var result = controller.Delete(1).Result as ObjectResult;
+
+            Assert.IsTrue(result.StatusCode == 500);
+            _mockCRUDManager.Verify(m => m.DeleteAsync(1), Times.Once);
+        }
     }
 }
