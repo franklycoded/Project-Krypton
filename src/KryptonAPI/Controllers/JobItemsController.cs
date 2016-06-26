@@ -27,9 +27,9 @@ namespace KryptonAPI.Controllers
 
                 return Ok(jobItemDto);
             }
-            catch(Exception ex){
+            catch(Exception){
                 // Log error
-                return StatusCode(500);
+                return StatusCode(500, "Error while getting JobItem by id " + id + ". See logs for details!");
             }
         }
 
@@ -43,9 +43,9 @@ namespace KryptonAPI.Controllers
 
                 return Ok(jobItemDto);   
             }
-            catch(Exception ex){
+            catch(Exception){
                 // Log error
-                return StatusCode(500);
+                return StatusCode(500, "Error while updating JobItem! See logs for details!");
             }
         }
 
@@ -57,13 +57,31 @@ namespace KryptonAPI.Controllers
                 var newJobItem = await _jobItemsManager.AddAsync(jobItemDto);
                 return Ok(newJobItem);   
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // log error
-                return StatusCode(500);
+                return StatusCode(500, "Error while adding JobItem. See logs for details!");
             }
         }
         
+        [HttpDelete("{id}")]
+        //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Delete(long id){
+            try
+            {
+                var isDeleteSuccessful = await _jobItemsManager.DeleteAsync(id);
+                
+                if(isDeleteSuccessful == false) return NotFound();
+
+                return Ok();
+            }
+            catch (System.Exception)
+            {
+                // log error
+                return StatusCode(500, "Error while deleting JobItem with id " + id + ". See logs for details!");
+            }
+        }
+
         private static object GetData(int taskIndex, int divider){
             int w = 640;
             int h = 480;
