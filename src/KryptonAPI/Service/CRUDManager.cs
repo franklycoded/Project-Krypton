@@ -59,7 +59,14 @@ namespace KryptonAPI.Service
         /// </summary>
         public async Task<bool> DeleteAsync(long id)
         {
-            throw new NotImplementedException();
+            var jobItem = await _repository.GetByIdAsync(id);
+
+            if(jobItem == null) return false;
+
+            _repository.Delete(jobItem);
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
         }
 
         /// <summary>

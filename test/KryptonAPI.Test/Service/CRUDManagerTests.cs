@@ -224,5 +224,35 @@ namespace KryptonAPI.Test.Service
 
             Assert.IsTrue(testDto.ModifiedUTC.Year == DateTime.UtcNow.Year && testDto.ModifiedUTC.Month == DateTime.UtcNow.Month && testDto.ModifiedUTC.Day == DateTime.UtcNow.Day);
         }
+
+        [Test]
+        public void Test_Delete_EntityNotFound_ReturnFalse(){
+            _mockRepository.Setup(m => m.GetByIdAsync(1)).ReturnsAsync(null);
+            
+            var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
+
+            var result = manager.DeleteAsync(1).Result;
+
+            Assert.IsFalse(result);
+            _mockRepository.Verify(m => m.GetByIdAsync(1), Times.Once);
+            _mockRepository.Verify(m => m.Delete(It.IsAny<TestEntity>()), Times.Never);
+            _mockUnitOfWork.Verify(m => m.SaveChangesAsync(), Times.Never);
+        }
+
+        [Test]
+        public void Test_Delete_EntityFound_ChangesSaved_ReturnTrue(){
+            var testEntity = new TestEntity();
+            
+            _mockRepository.Setup(m => m.GetByIdAsync(1)).ReturnsAsync(testEntity);
+            
+            var manager = new CRUDManager<TestContext, TestEntity, TestDto>(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object);
+
+            var result = manager.DeleteAsync(1).Result;
+
+            Assert.IsTrue(result);
+            _mockRepository.Verify(m => m.GetByIdAsync(1), Times.Once);
+            _mockRepository.Verify(m => m.Delete(testEntity), Times.Once);
+            _mockUnitOfWork.Verify(m => m.SaveChangesAsync(), Times.Once);
+        }
     }
 }
