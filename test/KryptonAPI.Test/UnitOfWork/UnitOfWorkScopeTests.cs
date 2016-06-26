@@ -5,7 +5,7 @@ using KryptonAPI.UnitOfWork;
 using Moq;
 using NUnit.Framework;
 
-namespace KryptonAPI.Test
+namespace KryptonAPI.Test.UnitOfWork
 {
     [TestFixture]
     public class UnitOfWorkScopeTests
