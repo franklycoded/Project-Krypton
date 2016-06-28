@@ -16,8 +16,5 @@ namespace KryptonAPI.DataContracts.JobScheduler
 
         [DataMember]
         public string JsonData { get; set; }
-
-        [DataMember]
-        public string JsonResult { get; set; }
     }
 }

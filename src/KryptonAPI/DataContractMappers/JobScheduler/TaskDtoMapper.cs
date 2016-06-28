@@ -18,15 +18,11 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
         }
 
         /// <summary>
-        /// Maps the JsonResult between the TaskDto and the JobItem entity instances
+        /// This operation is not supported
         /// </summary>
-        /// <param name="dto">The TaskDto instance to map</param>
-        /// <param name="entity">The JobItem instance to be mapped</param>
-        /// <returns>The mapper JobItem instance</returns>
         public JobItem MapDtoToEntity(TaskDto dto, JobItem entity)
         {
-            entity.JsonResult = dto.JsonResult;
-            return entity;
+            throw new NotSupportedException("It's not a valid operation to map a TaskDto instance to a JobItem entity");
         }
 
         /// <summary>
@@ -39,8 +35,7 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
             var dto = new TaskDto(){
                 JobItemId = entity.Id,
                 Code = entity.Code,
-                JsonData = entity.JsonData,
-                JsonResult = entity.JsonResult
+                JsonData = entity.JsonData
             };
 
             return dto;
