@@ -14,9 +14,9 @@ namespace KryptonAPI.Service
     public class CRUDManager<TContext, TEntity, TDto> : ICRUDManager<TEntity, TDto> where TContext : class where TEntity : class, IEntity 
     where TDto: class, ICRUDDto
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IRepository<TEntity> _repository;
-        private readonly IDataContractMapper<TEntity, TDto> _dataContractMapper;
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IRepository<TEntity> _repository;
+        protected readonly IDataContractMapper<TEntity, TDto> _dataContractMapper;
 
         /// <summary>
         /// Creates a new instance of the CRUD Manager

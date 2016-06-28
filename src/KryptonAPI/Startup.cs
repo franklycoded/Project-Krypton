@@ -16,6 +16,7 @@ using KryptonAPI.Service;
 using KryptonAPI.DataContracts.JobScheduler;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContractMappers.JobScheduler;
+using KryptonAPI.Service.JobScheduler;
 
 namespace KryptonAPI
 {
@@ -54,9 +55,10 @@ namespace KryptonAPI
             });
 
             // Registering service layer
-            //services.AddSingleton<IDataContractMapperFactory, DataContractMapperFactory>();
             services.AddSingleton<IDataContractMapper<JobItem, JobItemDto>, JobItemDtoMapper>();
-            services.AddScoped<ICRUDManager<JobItem, JobItemDto>, CRUDManager<KryptonAPIContext, JobItem, JobItemDto>>();
+            services.AddSingleton<IDataContractMapper<JobItem, TaskDto>, TaskDtoMapper>();
+            services.AddSingleton<IJobItemsQueue, JobItemsQueue>();
+            services.AddScoped<IJobItemsManager, JobItemsManager>();
             
             // Configuring cors
             services.AddCors(options => {
