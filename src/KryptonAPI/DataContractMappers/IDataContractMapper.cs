@@ -1,12 +1,9 @@
-using KryptonAPI.Data.Models;
-using KryptonAPI.DataContracts;
-
 namespace KryptonAPI.DataContractMappers
 {
     /// <summary>
     /// Maps entity to dto and vice versa
     /// </summary>
-    public interface IDataContractMapper<TEntity, TDto> where TEntity: class, IEntity where TDto : class, ICRUDDto
+    public interface IDataContractMapper<TEntity, TDto>
     {
         /// <summary>
         /// Maps the given entity to a dto

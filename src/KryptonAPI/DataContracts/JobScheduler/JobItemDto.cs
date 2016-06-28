@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace KryptonAPI.DataContracts.JobScheduler
 {
+    /// <summary>
+    /// Data transfer object representing a JobItem entity.
+    /// </summary>
     [DataContract]
     public class JobItemDto : ICRUDDto
     {
@@ -14,6 +17,12 @@ namespace KryptonAPI.DataContracts.JobScheduler
         
         [DataMember]
         public string JsonResult { get; set; }
+
+        [DataMember]
+        public string Code { get; set; }
+
+        [DataMember]
+        public string JsonData { get; set; }
         
         [DataMember]
         public long JobId { get; set; }

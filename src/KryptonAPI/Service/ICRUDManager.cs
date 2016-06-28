@@ -6,8 +6,7 @@ namespace KryptonAPI.Service
     /// <summary>
     /// Generic service class for CRUD operations
     /// </summary>
-    public interface ICRUDManager<TEntity, TDto> where TEntity : class, IEntity 
-    where TDto: class
+    public interface ICRUDManager<TEntity, TDto> 
     {
         /// <summary>
         /// Gets the business object by id

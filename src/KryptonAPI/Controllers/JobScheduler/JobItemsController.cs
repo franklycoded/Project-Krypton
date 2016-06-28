@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 using KryptonAPI.Service;
+using KryptonAPI.Service.JobScheduler;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -11,12 +12,30 @@ namespace KryptonAPI.Controllers.JobScheduler
     [Route("api/jobitems")]
     public class JobItemsController : CRUDController<JobItem, JobItemDto>
     {    
-        private readonly ICRUDManager<JobItem, JobItemDto> _jobItemsManager;
+        private readonly IJobItemsManager _jobItemsManager;
         
-        public JobItemsController(ICRUDManager<JobItem, JobItemDto> jobItemsManager) : base(jobItemsManager){
+        public JobItemsController(IJobItemsManager jobItemsManager) : base(jobItemsManager){
             _jobItemsManager = jobItemsManager;
         }
         
+        [HttpGet("next")]
+        //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> GetNextAsync(){
+            try
+            {
+                var nextJobItem = await _jobItemsManager.GetNextFromQueueAsync();
+
+                if(nextJobItem == null) return NotFound();
+
+                return Ok(nextJobItem);
+            }
+            catch (Exception)
+            {
+                // Log error
+                return StatusCode(500, "Error while getting next job item");
+            }
+        }
+
         // public override async Task<IActionResult> GetById(long id){
         //     return await base.GetById(id);
         // } 

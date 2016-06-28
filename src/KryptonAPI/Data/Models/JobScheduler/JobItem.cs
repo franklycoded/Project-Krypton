@@ -8,6 +8,8 @@ namespace KryptonAPI.Data.Models.JobScheduler
         public long StatusId { get; set; }
         public Status Status { get; set; }
         public string JsonResult { get; set; }
+        public string Code { get; set; }
+        public string JsonData { get; set; }
         public long JobId { get; set; }
         public Job Job { get; set; }
         public DateTime CreatedUTC { get; set; }

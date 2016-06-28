@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KryptonAPI.Controllers;
 using KryptonAPI.Data.Models;
 using KryptonAPI.DataContracts;
@@ -49,7 +46,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.GetById(1).Result;
 
-            Assert.IsTrue(result is NotFoundResult);
+            Assert.IsInstanceOf(typeof(NotFoundResult), result);
             _mockCRUDManager.Verify(m => m.GetByIdAsync(1), Times.Once);
         }
 
@@ -65,7 +62,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.GetById(1).Result;
 
-            Assert.IsTrue(result is OkObjectResult); 
+            Assert.IsInstanceOf(typeof(OkObjectResult), result); 
             _mockCRUDManager.Verify(m => m.GetByIdAsync(1), Times.Once);       
         }
 
@@ -75,9 +72,10 @@ namespace KryptonAPI.Test.Api
 
             var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
 
-            var result = controller.GetById(1).Result as ObjectResult;
+            var result = controller.GetById(1).Result;
 
-            Assert.IsTrue(result.StatusCode == 500);
+            Assert.IsInstanceOf(typeof(ObjectResult), result);
+            Assert.AreEqual((result as ObjectResult).StatusCode, 500);
             _mockCRUDManager.Verify(m => m.GetByIdAsync(1), Times.Once);    
         }
 
@@ -93,7 +91,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.Post(testDto).Result;
 
-            Assert.IsTrue(result is OkObjectResult);
+            Assert.IsInstanceOf(typeof(OkObjectResult), result);
             _mockCRUDManager.Verify(m => m.AddAsync(testDto), Times.Once);
         }
 
@@ -107,9 +105,10 @@ namespace KryptonAPI.Test.Api
 
             var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
 
-            var result = controller.Post(testDto).Result as ObjectResult;
+            var result = controller.Post(testDto).Result;
 
-            Assert.IsTrue(result.StatusCode == 500);
+            Assert.IsInstanceOf(typeof(ObjectResult), result);
+            Assert.AreEqual((result as ObjectResult).StatusCode, 500);
             _mockCRUDManager.Verify(m => m.AddAsync(testDto), Times.Once);
         }
 
@@ -125,7 +124,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.Put(testDto).Result;
 
-            Assert.IsTrue(result is OkObjectResult);
+            Assert.IsInstanceOf(typeof(OkObjectResult), result);
             _mockCRUDManager.Verify(m => m.UpdateAsync(testDto), Times.Once);
         }
 
@@ -142,7 +141,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.Put(testDto).Result;
 
-            Assert.IsTrue(result is NotFoundResult);
+            Assert.IsInstanceOf(typeof(NotFoundResult), result);
             _mockCRUDManager.Verify(m => m.UpdateAsync(testDto), Times.Once);
         }
 
@@ -156,9 +155,10 @@ namespace KryptonAPI.Test.Api
 
             var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
 
-            var result = controller.Put(testDto).Result as ObjectResult;
+            var result = controller.Put(testDto).Result;
 
-            Assert.IsTrue(result.StatusCode == 500);
+            Assert.IsInstanceOf(typeof(ObjectResult), result);
+            Assert.AreEqual((result as ObjectResult).StatusCode, 500);
             _mockCRUDManager.Verify(m => m.UpdateAsync(testDto), Times.Once);
         }
 
@@ -170,7 +170,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.Delete(1).Result;
 
-            Assert.IsTrue(result is OkResult);
+            Assert.IsInstanceOf(typeof(OkResult), result);
             _mockCRUDManager.Verify(m => m.DeleteAsync(1), Times.Once);
         }
 
@@ -183,7 +183,7 @@ namespace KryptonAPI.Test.Api
 
             var result = controller.Delete(1).Result;
 
-            Assert.IsTrue(result is NotFoundResult);
+            Assert.IsInstanceOf(typeof(NotFoundResult), result);
             _mockCRUDManager.Verify(m => m.DeleteAsync(1), Times.Once);
         }
 
@@ -193,9 +193,10 @@ namespace KryptonAPI.Test.Api
 
             var controller = new CRUDController<CRUDEntity, CRUDDto>(_mockCRUDManager.Object);
 
-            var result = controller.Delete(1).Result as ObjectResult;
-
-            Assert.IsTrue(result.StatusCode == 500);
+            var result = controller.Delete(1).Result;
+            
+            Assert.IsInstanceOf(typeof(ObjectResult), result);
+            Assert.AreEqual((result as ObjectResult).StatusCode, 500);
             _mockCRUDManager.Verify(m => m.DeleteAsync(1), Times.Once);
         }
     }
