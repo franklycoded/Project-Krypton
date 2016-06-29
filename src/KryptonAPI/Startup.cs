@@ -42,7 +42,8 @@ namespace KryptonAPI
 
             // Adding Auth0 settings to services
             services.Configure<Auth0Config>(Configuration.GetSection("Auth0Config"));
-            
+            services.Configure<JobItemsQueueConfiguration>(Configuration.GetSection("JobItemsQueueConfig"));
+
             // Registering uow and repository layer
             services.AddSingleton<IUnitOfWorkContextFactory, UnitOfWorkContextFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWorkScope>();

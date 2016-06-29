@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using KryptonAPI.Configuration;
 using KryptonAPI.DataContracts.JobScheduler;
+using Microsoft.Extensions.Options;
 
 namespace KryptonAPI.Service.JobScheduler
 {
@@ -11,8 +10,11 @@ namespace KryptonAPI.Service.JobScheduler
     /// </summary>
     public class JobItemsQueue : IJobItemsQueue
     {
-        public JobItemsQueue()
+        
+        
+        public JobItemsQueue(IOptions<JobItemsQueueConfiguration> queueConfiguration)
         {
+            System.Console.WriteLine("hostname: " + queueConfiguration.Value.Hostname);
         }
 
         /// <summary>
