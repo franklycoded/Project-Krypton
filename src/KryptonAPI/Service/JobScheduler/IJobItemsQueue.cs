@@ -1,3 +1,4 @@
+using System;
 using KryptonAPI.DataContracts.JobScheduler;
 
 namespace KryptonAPI.Service.JobScheduler
@@ -5,7 +6,7 @@ namespace KryptonAPI.Service.JobScheduler
     /// <summary>
     /// Adds and removes items from the jobitem queue
     /// </summary>
-    public interface IJobItemsQueue
+    public interface IJobItemsQueue : IDisposable
     {
         /// <summary>
         /// Gets the next job item from the queue

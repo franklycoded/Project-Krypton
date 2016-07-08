@@ -1,6 +1,7 @@
 using System;
 using KryptonAPI.Configuration;
 using KryptonAPI.Service.JobScheduler;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -11,16 +12,25 @@ namespace KryptonAPI.Test.Service
     public class JobItemsQueueTests
     {
         private Mock<IOptions<JobItemsQueueConfiguration>> _mockJobItemsQueueConfiguraiton;
+        private Mock<ILoggerFactory> _mockLoggerFactory;
 
         [SetUp]
         public void Init(){
             _mockJobItemsQueueConfiguraiton = new Mock<IOptions<JobItemsQueueConfiguration>>();
+            _mockLoggerFactory = new Mock<ILoggerFactory>();
         }
 
         [Test]
         public void Test_NoQueueConfigurationProvided_ArgumentNullException(){
             Assert.Throws<ArgumentNullException>(() => {
-                var jobItemsQueue = new JobItemsQueue(null);
+                var jobItemsQueue = new JobItemsQueue(null, _mockLoggerFactory.Object);
+            });
+        }
+
+        [Test]
+        public void Test_NoLoggerFactoryProvided_ArgumentNullException(){
+            Assert.Throws<ArgumentNullException>(() => {
+                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object, null);
             });
         }
 
@@ -34,7 +44,7 @@ namespace KryptonAPI.Test.Service
             _mockJobItemsQueueConfiguraiton.SetupGet(m => m.Value).Returns(config);
             
             Assert.Throws<ArgumentOutOfRangeException>(() => {
-                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object);
+                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object, _mockLoggerFactory.Object);
             });
         }
 
@@ -48,7 +58,7 @@ namespace KryptonAPI.Test.Service
             _mockJobItemsQueueConfiguraiton.SetupGet(m => m.Value).Returns(config);
             
             Assert.Throws<ArgumentOutOfRangeException>(() => {
-                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object);
+                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object, _mockLoggerFactory.Object);
             });
         }
 
@@ -62,7 +72,7 @@ namespace KryptonAPI.Test.Service
             _mockJobItemsQueueConfiguraiton.SetupGet(m => m.Value).Returns(config);
             
             Assert.Throws<ArgumentOutOfRangeException>(() => {
-                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object);
+                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object, _mockLoggerFactory.Object);
             });
         }
 
@@ -76,7 +86,7 @@ namespace KryptonAPI.Test.Service
             _mockJobItemsQueueConfiguraiton.SetupGet(m => m.Value).Returns(config);
             
             Assert.Throws<ArgumentOutOfRangeException>(() => {
-                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object);
+                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object, _mockLoggerFactory.Object);
             });
         }
 
@@ -90,7 +100,7 @@ namespace KryptonAPI.Test.Service
             _mockJobItemsQueueConfiguraiton.SetupGet(m => m.Value).Returns(config);
             
             Assert.Throws<ArgumentOutOfRangeException>(() => {
-                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object);
+                var jobItemsQueue = new JobItemsQueue(_mockJobItemsQueueConfiguraiton.Object, _mockLoggerFactory.Object);
             });
         }
     }
