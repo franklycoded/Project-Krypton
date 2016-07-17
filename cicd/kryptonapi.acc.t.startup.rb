@@ -3,36 +3,57 @@ require 'open3'
 #Arguments
 dest = ARGV[0];
 
-puts "Removing krypton-test-mq docker container"
+def runTest(dest, testMethod)
+    puts "Removing krypton-test-mq docker container"
 
-system("docker stop krypton-test-mq")
-system("docker rm krypton-test-mq")
+    system("docker stop krypton-test-mq")
+    system("docker rm krypton-test-mq")
 
-puts "Removed krypton-test-mq docker container"
-puts "Creating new instance of krypton-test-mq docker container"
+    puts "Removed krypton-test-mq docker container"
+    puts "Creating new instance of krypton-test-mq docker container"
 
-system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p 8070:5672 rabbitmq:3")
+    system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p 8070:5672 rabbitmq:3")
 
-puts "Created new instance of krypton-test-mq docker container"
-puts "Starting KryptonAPI"
+    puts "Created new instance of krypton-test-mq docker container"
+    puts "Starting KryptonAPI"
 
-kryptonApiPid = -1
+    kryptonApiPid = -1
 
-Dir.chdir("#{dest}") do
-    ENV['ASPNETCORE_ENVIRONMENT']='AcceptanceTesting'
-    stdin, stdout, stderr, wait_thr = Open3.popen3('dotnet KryptonAPI.dll');
-    
-    kryptonApiPid = wait_thr.pid
-    
-    output = "";
+    Dir.chdir("#{dest}") do
+        ENV['ASPNETCORE_ENVIRONMENT']='AcceptanceTesting'
+        stdin, stdout, stderr, wait_thr = Open3.popen3('dotnet KryptonAPI.dll');
+        
+        kryptonApiPid = wait_thr.pid
+        
+        output = "";
 
-    while !output.match(/^Application started/) do
-        output = stdout.gets
-        puts output
+        while !output.match(/^Application started/) do
+            output = stdout.gets
+            puts output
+        end
     end
+
+    puts "KryptonAPI is running"
+
+    puts "Running: #{testMethod.name}"
+    testResult = testMethod.call
+
+    if testResult
+        puts "Pass: #{testMethod.name}"
+    else
+        puts "Fail: #{testMethod.name}"
+    end
+
+    puts "Stopping KryptonAPI"
+
+    system("kill #{kryptonApiPid}")
+
+    puts "KryptonAPI stopped"
+
+    return testResult
 end
 
-puts "KryptonAPI is running"
+puts "Loading tests..."
 
 require '../test/KryptonAPI.AcceptanceTests/tests.jobscheduler.rb'
 
@@ -44,17 +65,16 @@ numPassed = 0
 numFailed = 0
 finalResult = true
 
+puts "Running tests..."
+
 tests.each do |test|
-    puts "Running: #{test.name}"
-    testResult = test.call
+    testResult = runTest(dest, test)
     finalResult = finalResult && testResult
 
     if testResult
         numPassed = numPassed + 1
-        puts "Pass: #{test.name}"
     else
         numFailed = numFailed + 1
-        puts "Fail: #{test.name}"
     end
 end
 
@@ -66,9 +86,3 @@ end
 
 puts "Tests outcome: #{finalResult}"
 puts "Tests ran: #{numTests}, Passed: #{numPassed}, Failed: #{numFailed}"
-
-puts "Stopping KryptonAPI"
-
-system("kill #{kryptonApiPid}")
-
-puts "KryptonAPI stopped"
