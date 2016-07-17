@@ -17,10 +17,15 @@ puts "Created new instance of krypton-test-mq docker container"
 puts "Starting KryptonAPI"
 
 Dir.chdir("#{dest}") do
+    ENV['ASPNETCORE_ENVIRONMENT']='AcceptanceTesting'
     stdin, stdout, stderr, wait_thr = Open3.popen3('dotnet KryptonAPI.dll');
     
-    puts stdout.gets
-end
+    output = "";
 
+    while !output.match(/^Application started/) do
+        output = stdout.gets
+        puts output
+    end
+end
 
 puts "KryptonAPI is running"

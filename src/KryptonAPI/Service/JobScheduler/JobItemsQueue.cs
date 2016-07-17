@@ -39,12 +39,24 @@ namespace KryptonAPI.Service.JobScheduler
 
             _queueConfiguration = queueConfiguration.Value;
 
+            // Creating connection
             _connectionFactory = new ConnectionFactory() { 
                 HostName = _queueConfiguration.Hostname, 
                 Port = _queueConfiguration.Port 
             };
 
             _connection = _connectionFactory.CreateConnection();
+
+            // Declaring queue
+            using(var model = _connection.CreateModel()){
+                model.QueueDeclare(queue: _queueConfiguration.QueueName,
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+                
+                model.CreateBasicProperties().Persistent = true;
+            }
         }
 
         /// <summary>
