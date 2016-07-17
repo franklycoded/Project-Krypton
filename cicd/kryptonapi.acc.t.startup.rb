@@ -15,20 +15,24 @@ def cleanDb(dest)
     # end
 end
 
-def runTest(dest, testMethod)
-    cleanDb(dest)
-    
+def cleanQueueEngine()
     puts "Removing krypton-test-mq docker container"
 
     system("docker stop krypton-test-mq")
     system("docker rm krypton-test-mq")
 
-    puts "Removed krypton-test-mq docker container"
+    puts "Removed krypton-test-mq docker container" 
+end
+
+def createQueueEngine()
     puts "Creating new instance of krypton-test-mq docker container"
 
     system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p 8070:5672 rabbitmq:3")
 
     puts "Created new instance of krypton-test-mq docker container"
+end
+
+def createKryptonApiService(dest)
     puts "Starting KryptonAPI"
 
     kryptonApiPid = -1
@@ -49,6 +53,23 @@ def runTest(dest, testMethod)
 
     puts "KryptonAPI is running"
 
+    return kryptonApiPid
+end
+
+def killKryptonApiService(pid)
+    puts "Stopping KryptonAPI"
+
+    system("kill #{pid}")
+
+    puts "KryptonAPI stopped"
+end
+
+def runTest(dest, testMethod)
+    cleanDb(dest)
+    cleanQueueEngine()
+    createQueueEngine()
+    kryptonApiPid = createKryptonApiService(dest)
+
     puts "Running: #{testMethod.name}"
     testResult = testMethod.call
 
@@ -58,11 +79,9 @@ def runTest(dest, testMethod)
         puts "Fail: #{testMethod.name}"
     end
 
-    puts "Stopping KryptonAPI"
-
-    system("kill #{kryptonApiPid}")
-
-    puts "KryptonAPI stopped"
+    killKryptonApiService(kryptonApiPid)
+    cleanQueueEngine()
+    cleanDb(dest)
 
     return testResult
 end
