@@ -1,9 +1,23 @@
 require 'open3'
+require 'sqlite3'
 
 #Arguments
 dest = ARGV[0];
 
+def cleanDb(dest)
+    puts "Cleaning database"
+    
+    db = SQLite3::Database.new( "#{dest}/kryptonapi.db" )
+    db.execute("delete from JobItems")
+    db.execute("delete from Jobs")
+    # rows = db.execute( "select * from JobItems" ) do |row|
+    #     puts row
+    # end
+end
+
 def runTest(dest, testMethod)
+    cleanDb(dest)
+    
     puts "Removing krypton-test-mq docker container"
 
     system("docker stop krypton-test-mq")
