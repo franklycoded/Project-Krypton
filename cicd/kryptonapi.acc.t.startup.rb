@@ -1,5 +1,7 @@
 require 'open3'
 require 'sqlite3'
+require 'bunny'
+
 
 #Arguments
 dest = ARGV[0];
@@ -30,6 +32,21 @@ def createQueueEngine()
     system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p 8070:5672 rabbitmq:3")
 
     puts "Created new instance of krypton-test-mq docker container"
+    puts "Connecting to queue engine"
+
+    engineIsUp = false
+
+    while(!engineIsUp) do
+        begin
+            conn = Bunny.new(:hostname => "localhost", :port => 8070)
+            conn.start
+            engineIsUp = true
+            return conn
+        rescue
+            puts 'waiting for queue engine to start...'
+            sleep(1)
+        end
+    end
 end
 
 def createKryptonApiService(dest)
@@ -67,7 +84,7 @@ end
 def runTest(dest, testMethod)
     cleanDb(dest)
     cleanQueueEngine()
-    createQueueEngine()
+    queueConnection = createQueueEngine()
     kryptonApiPid = createKryptonApiService(dest)
 
     puts "Running: #{testMethod.name}"
@@ -80,6 +97,9 @@ def runTest(dest, testMethod)
     end
 
     killKryptonApiService(kryptonApiPid)
+
+    queueConnection.close
+
     cleanQueueEngine()
     cleanDb(dest)
 
@@ -90,8 +110,7 @@ puts "Loading tests..."
 
 require '../test/KryptonAPI.AcceptanceTests/tests.jobscheduler.rb'
 
-tests = [method(:test_getNext),
-         method(:test_getNext2)]
+tests = [method(:test_getNext_emptyQueue_return404)]
 
 numTests = tests.length
 numPassed = 0
