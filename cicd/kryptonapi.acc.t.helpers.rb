@@ -12,6 +12,7 @@ class Helper
         db = SQLite3::Database.new( @dbPath )
         db.execute("delete from JobItems")
         db.execute("delete from Jobs")
+        db.close
         # rows = db.execute( "select * from JobItems" ) do |row|
         #     puts row
         # end
@@ -29,7 +30,7 @@ class Helper
     def createQueueEngine()
         puts "Creating new instance of krypton-test-mq docker container"
 
-        system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p #{@queueEnginePort}:5672 rabbitmq:3")
+        system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p #{@queueEnginePort}:5672 -p 8060:15672 rabbitmq:3-management")
 
         puts "Created new instance of krypton-test-mq docker container"
         puts "Connecting to queue engine"

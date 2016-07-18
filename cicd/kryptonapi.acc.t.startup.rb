@@ -22,7 +22,9 @@ require '../test/KryptonAPI.AcceptanceTests/tests.jobscheduler.rb'
 jobSchedulerTests = JobSchedulerTests.new(apiHostname, apiPort, queueEngineHostname, queueEnginePort, taskQueueName, dbPath)
 
 tests = [jobSchedulerTests.method(:test_getNext_emptyQueue_return404),
-         jobSchedulerTests.method(:test_getNext_itemInQueue_notInDatabase_return500)]
+         jobSchedulerTests.method(:test_getNext_itemInQueue_notInDatabase_return500),
+         jobSchedulerTests.method(:test_getNext_itemInQueue_inDatabase_return200_statusRunning_itemRemovedFromQueue)
+         ]
 
 numTests = tests.length
 numPassed = 0
@@ -31,8 +33,13 @@ finalResult = true
 
 puts "Running tests..."
 
+resultsArray = Hash.new
+
 tests.each do |test|
     testResult = testHelper.runTest(dest, test)
+
+    resultsArray[test.name] = testResult
+
     finalResult = finalResult && testResult
 
     if testResult
@@ -50,3 +57,8 @@ end
 
 puts "Tests outcome: #{finalResult}"
 puts "Tests ran: #{numTests}, Passed: #{numPassed}, Failed: #{numFailed}"
+
+resultsArray.each do |key, value|
+    outcome = value ? "Pass" : "Fail"
+    puts "#{outcome}: #{key}"
+end
