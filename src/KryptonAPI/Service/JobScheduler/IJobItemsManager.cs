@@ -14,5 +14,12 @@ namespace KryptonAPI.Service.JobScheduler
         /// </summary>
         /// <returns>The next job item to process</returns>
         Task<TaskDto> GetNextFromQueueAsync();
+
+        /// <summary>
+        /// Submits a task result
+        /// </summary>
+        /// <param name="taskResult">The submitted task result</param>
+        /// <returns>True if the submission was successful, false otherwise</returns>
+        Task<bool> SubmitTaskResultAsync(TaskResultDto taskResult);
     }
 }

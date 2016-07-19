@@ -49,5 +49,13 @@ namespace KryptonAPI.Service.JobScheduler
 
             return _taskDataContractMapper.MapEntityToDto(jobItem);
         }
+
+        /// <summary>
+        /// <see cref="IJobItemsManager.SubmitTaskResult" />
+        /// </summary>
+        public async Task<bool> SubmitTaskResultAsync(TaskResultDto taskResult)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
