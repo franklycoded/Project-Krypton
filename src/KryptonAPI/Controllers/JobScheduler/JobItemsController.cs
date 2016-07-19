@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
-using KryptonAPI.Service;
 using KryptonAPI.Service.JobScheduler;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -33,6 +32,19 @@ namespace KryptonAPI.Controllers.JobScheduler
             {
                 // Log error
                 return StatusCode(500, "Error while getting next job item");
+            }
+        }
+
+        [HttpPost("result")]
+        public async Task<IActionResult> SubmitTaskResult(TaskResultDto taskResult){
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (Exception)
+            {
+                // Log error
+                return StatusCode(500, "Error while submitting task result");
             }
         }
 

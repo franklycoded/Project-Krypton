@@ -8,9 +8,10 @@ using KryptonAPI.Data;
 namespace KryptonAPI.Migrations
 {
     [DbContext(typeof(KryptonAPIContext))]
-    partial class KryptonAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20160719185757_KryptonAPI0003")]
+    partial class KryptonAPI0003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20896");

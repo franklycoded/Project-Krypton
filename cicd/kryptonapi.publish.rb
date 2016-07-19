@@ -12,4 +12,5 @@ end
 puts "Finished publish"
 puts "Copying artifacts to #{dest}"
 FileUtils.cp_r("../src/KryptonAPI/bin/Debug/netcoreapp1.0/publish/.", "#{dest}")
+FileUtils.cp_r("../src/KryptonAPI/bin/Debug/netcoreapp1.0/kryptonapi.db", "#{dest}")
 puts "Finished copying artifacts to #{dest}"

@@ -123,6 +123,126 @@ class JobSchedulerTests
         end
     end
 
+    def test_submitResult_submitEmpty_return500()
+        RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", nil, {:content_type => :json}) { |response, request, result, &block|
+        case response.code
+            when 500
+                return true
+            else
+                puts "Unexpected response code: #{response.code}"
+                return false
+            end
+        } 
+    end
+
+    def test_submitResult_successfulResult_stateChangedToSuccess_return200()
+        db = nil
+
+        begin
+            #Adding running Job and JobItem to database
+            db = SQLite3::Database.new( @dbPath )
+            db.execute("insert into Jobs (CreatedUTC, FinalResult, ModifiedUTC, StatusId, UserId) values('2016-01-01', '', '2016-01-01', 2, 1)")
+
+            lastRowId = getLastRowId(db)
+
+            db.execute("insert into JobItems (CreatedUTC, JobId, JsonResult, ModifiedUTC, StatusId, Code, JsonData) values('2016-01-01', #{lastRowId}, 'noresult', '2016-01-01', 3, 'code', 'jsondata')")
+
+            lastRowId = getLastRowId(db)
+
+            #Submitting successful task result
+            jdata = JSON.generate(["JobItemId" => lastRowId, "TaskResult" => "successful result", "IsSuccessful" => true, "ErrorMessage" => nil])
+
+            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json}) { |response, request, result, &block|
+            case response.code
+                when 200
+                    # Check if JobItem status id is Success (4)
+                    db.results_as_hash = true
+                    statusId = 0
+                    jsonResult = ""
+
+                    db.execute("select * from JobItems where Id = #{lastRowId}") do |row|
+                        statusId = row["StatusId"].to_i
+                        jsonResult = row["JsonResult"]
+                    end
+
+                    if statusId != 4
+                        puts "Unexpected status id: The status of the JobItem is expected to be 'Success' with StatusId 4"
+                        return false
+                    end
+
+                    if jsonResult != "successful result"
+                        puts "Unexpected jsonResult: #{jsonResult}"
+                        return false
+                    end
+
+                    return true
+                else
+                    puts "Unexpected response code: #{response.code}"
+                    return false
+                end
+            } 
+
+        ensure
+            if db != nil
+                db.close
+            end
+        end
+    end
+
+    def test_submitResult_failedResult_stateChangedToFailed_errorFieldFilled_return200()
+        db = nil
+
+        begin
+            #Adding running Job and JobItem to database
+            db = SQLite3::Database.new( @dbPath )
+            db.execute("insert into Jobs (CreatedUTC, FinalResult, ModifiedUTC, StatusId, UserId) values('2016-01-01', '', '2016-01-01', 2, 1)")
+
+            lastRowId = getLastRowId(db)
+
+            db.execute("insert into JobItems (CreatedUTC, JobId, JsonResult, ModifiedUTC, StatusId, Code, JsonData) values('2016-01-01', #{lastRowId}, 'noresult', '2016-01-01', 3, 'code', 'jsondata')")
+
+            lastRowId = getLastRowId(db)
+
+            #Submitting successful task result
+            jdata = JSON.generate(["JobItemId" => lastRowId, "TaskResult" => "error result", "IsSuccessful" => false, "ErrorMessage" => "error message"])
+
+            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json}) { |response, request, result, &block|
+            case response.code
+                when 200
+                    # Check if JobItem status id is Fail (5)
+                    db.results_as_hash = true
+                    errorMessage = ""
+                    statusId = 0
+
+                    db.execute("select * from JobItems where Id = #{lastRowId}") do |row|
+                        statusId = row["StatusId"].to_i
+                        errorMessage = row["ErrorMessage"]
+                    end
+
+                    if statusId != 5
+                        puts "Unexpected status id: The status of the JobItem is expected to be 'Fail' with StatusId 5"
+                        return false
+                    end
+
+                    if errorMessage != "error message"
+                        puts "Unexpected error message: #{errorMessage}"
+                        return false
+                    end
+
+                    return true
+                else
+                    puts "Unexpected response code: #{response.code}"
+                    return false
+                end
+            } 
+
+        ensure
+            if db != nil
+                db.close
+            end
+        end
+    end
+
     def getLastRowId(db)
         db.execute("select last_insert_rowid()") do |row|
             return row[0]

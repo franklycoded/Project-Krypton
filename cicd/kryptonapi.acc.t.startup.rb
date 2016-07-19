@@ -21,9 +21,13 @@ require '../test/KryptonAPI.AcceptanceTests/tests.jobscheduler.rb'
 
 jobSchedulerTests = JobSchedulerTests.new(apiHostname, apiPort, queueEngineHostname, queueEnginePort, taskQueueName, dbPath)
 
-tests = [#jobSchedulerTests.method(:test_getNext_emptyQueue_return404),
-         #jobSchedulerTests.method(:test_getNext_itemInQueue_notInDatabase_return500),
-         jobSchedulerTests.method(:test_getNext_itemInQueue_inDatabase_return200_statusRunning_itemRemovedFromQueue)
+tests = [
+         jobSchedulerTests.method(:test_getNext_emptyQueue_return404),
+         jobSchedulerTests.method(:test_getNext_itemInQueue_notInDatabase_return500),
+         jobSchedulerTests.method(:test_getNext_itemInQueue_inDatabase_return200_statusRunning_itemRemovedFromQueue),
+         jobSchedulerTests.method(:test_submitResult_submitEmpty_return500),
+         jobSchedulerTests.method(:test_submitResult_successfulResult_stateChangedToSuccess_return200),
+         jobSchedulerTests.method(:test_submitResult_failedResult_stateChangedToFailed_errorFieldFilled_return200)
          ]
 
 numTests = tests.length

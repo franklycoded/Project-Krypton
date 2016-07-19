@@ -12,6 +12,7 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
         {
             entity.StatusId = dto.StatusId;
             entity.JsonResult = dto.JsonResult;
+            entity.ErrorMessage = dto.ErrorMessage;
             entity.JobId = dto.JobId;
             entity.Code = dto.Code;
             entity.JsonData = dto.JsonData;
@@ -23,6 +24,7 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
         {
             dto.StatusId = entity.StatusId;
             dto.JsonResult = entity.JsonResult;
+            dto.ErrorMessage = entity.ErrorMessage;
             dto.JobId = entity.JobId;
             dto.Code = entity.Code;
             dto.JsonData = entity.JsonData;

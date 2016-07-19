@@ -19,6 +19,7 @@ namespace KryptonAPI.Test.DataContract
                 Id = 1,
                 StatusId = 2,
                 JsonResult = "jsonResult",
+                ErrorMessage = "errorMessage",
                 Code = "code",
                 JsonData = "jsonData",
                 JobId = 3,
@@ -31,6 +32,7 @@ namespace KryptonAPI.Test.DataContract
             Assert.AreEqual(dto.Id, entity.Id);
             Assert.AreEqual(dto.StatusId, entity.StatusId);
             Assert.AreEqual(dto.JsonResult, entity.JsonResult);
+            Assert.AreEqual(dto.ErrorMessage, entity.ErrorMessage);
             Assert.AreEqual(dto.Code, entity.Code);
             Assert.AreEqual(dto.JsonData, entity.JsonData);
             Assert.AreEqual(dto.JobId, entity.JobId);
@@ -48,6 +50,7 @@ namespace KryptonAPI.Test.DataContract
                 Id = 1,
                 StatusId = 2,
                 JsonResult = "jsonResult",
+                ErrorMessage = "errorMessage",
                 Code = "code",
                 JsonData = "jsonData",
                 JobId = 3,
@@ -60,6 +63,7 @@ namespace KryptonAPI.Test.DataContract
             Assert.AreEqual(dto.Id, entity.Id);
             Assert.AreEqual(dto.StatusId, entity.StatusId);
             Assert.AreEqual(dto.JsonResult, entity.JsonResult);
+            Assert.AreEqual(dto.ErrorMessage, entity.ErrorMessage);
             Assert.AreEqual(dto.Code, entity.Code);
             Assert.AreEqual(dto.JsonData, entity.JsonData);
             Assert.AreEqual(dto.JobId, entity.JobId);
