@@ -30,7 +30,7 @@ class Helper
     def createQueueEngine()
         puts "Creating new instance of krypton-test-mq docker container"
 
-        system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p #{@queueEnginePort}:5672 -p 8060:15672 rabbitmq:3-management")
+        system("docker run --hostname krypton-test-host-mq --name krypton-test-mq -d -p #{@queueEnginePort}:5672 rabbitmq:3")
 
         puts "Created new instance of krypton-test-mq docker container"
         puts "Connecting to queue engine"

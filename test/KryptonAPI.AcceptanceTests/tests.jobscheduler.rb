@@ -1,4 +1,5 @@
 require 'rest-client'
+require 'json'
 
 class JobSchedulerTests
     def initialize(apiHostname, apiPort, queueEngineHostname, queueEnginePort, taskQueueName, dbPath)
@@ -77,9 +78,23 @@ class JobSchedulerTests
             RestClient.get("http://#{@apiHostname}:#{@apiPort}/api/jobitems/next") { |response, request, result, &block|
             case response.code
                 when 200
+                    # Checking properties of response object
+                    responseObject = JSON.parse(response.body, object_class: OpenStruct)
+
+                    if !(responseObject.JobItemId == lastRowId && responseObject.Code == "code" && responseObject.JsonData == "jsondata")
+                        puts "Unexpected response object: #{response.body}"
+                        return false
+                    end
+
+                    # Checking job item status id
                     db.results_as_hash = true
                     db.execute("select * from JobItems where Id = #{lastRowId}") do |row|
                         statusId = row["StatusId"].to_i
+                    end
+
+                    if statusId != 3
+                        puts "Unexpected status id: The status of the JobItem is expected to be 'Running' with StatusId 3"
+                        return false
                     end
                 else
                     puts "Unexpected response code: #{response.code}"
@@ -91,7 +106,7 @@ class JobSchedulerTests
             RestClient.get("http://#{@apiHostname}:#{@apiPort}/api/jobitems/next") { |response, request, result, &block|
             case response.code
                 when 404
-                    return statusId == 3
+                    return true
                 else
                     puts "The queue is not empty"
                     return false
