@@ -10,6 +10,8 @@ import {Type} from 'angular2/core';
 import {AuthService} from './services/auth/auth';
 import {JayTracerService} from './services/tracer/jaytracer';
 import {JobRunnerService} from './services/jobs/jobrunner';
+import {TaskService} from './services/tasks/taskservice';
+import {TaskRunnerService} from './services/tasks/taskrunner';
 
 @App({
   template: '<ion-nav [root]="rootPage"></ion-nav>',
@@ -23,7 +25,9 @@ import {JobRunnerService} from './services/jobs/jobrunner';
     }),
     AuthService,
     JayTracerService,
-    JobRunnerService
+    JobRunnerService,
+    TaskService,
+    TaskRunnerService,
   ]
 })
 export class MyApp {

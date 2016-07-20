@@ -1,7 +1,7 @@
 import {Page} from 'ionic-angular';
 //import {JayTracerService} from '../../services/tracer/jaytracer';
 import {Component, Pipe, ChangeDetectorRef} from 'angular2/core';
-import {JobRunnerService} from '../../services/jobs/jobrunner';
+import {TaskRunnerService} from '../../services/tasks/taskrunner';
 
 @Page({
   templateUrl: 'build/pages/page3/page3.html'
@@ -11,7 +11,7 @@ export class Page3 {
   message: string;
   counter: number;
   
-  constructor(/*private jayTracer: JayTracerService,*/ private cd: ChangeDetectorRef, private jobRunnerService: JobRunnerService) {
+  constructor(/*private jayTracer: JayTracerService,*/ private cd: ChangeDetectorRef, private taskRunnerService: TaskRunnerService) {
     this.counter = 0;
     // this.scene = {
     //     background: [0, 0, 0],
@@ -69,8 +69,8 @@ export class Page3 {
     if(typeof(plugins) !== 'undefined'){
      plugins.insomnia.keepAwake(); 
     }
-    
-    var subscription = this.jobRunnerService.runWorker()
+
+    var subscription = this.taskRunnerService.runWorker()
       .subscribe(message => {
         this.message = message;
     });

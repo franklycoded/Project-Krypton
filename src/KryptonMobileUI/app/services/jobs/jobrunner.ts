@@ -1,4 +1,4 @@
-// app/services/tracer/jobrunner.ts
+// app/services/jobs/jobrunner.ts
 import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Rx';
 import {JobResultDto} from '../../models/jobs/jobResultDto'
