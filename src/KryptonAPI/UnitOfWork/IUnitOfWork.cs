@@ -17,6 +17,6 @@ namespace KryptonAPI.UnitOfWork
         /// Saves the changes asynchronously across all maintained UnitOfWorkContexts
         /// </summary>
         /// <returns></returns>
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

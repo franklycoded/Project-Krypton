@@ -67,10 +67,8 @@ namespace KryptonAPI.Test.UnitOfWork
             var testContext1 = new Mock<IUnitOfWorkContext>();
             var testContext2 = new Mock<IUnitOfWorkContext>();
 
-            testContext1.Setup(m => m.SaveChangesAsync()).Returns(Task.Factory.StartNew(() => {
-            }));
-            testContext2.Setup(m => m.SaveChangesAsync()).Returns(Task.Factory.StartNew(() => {
-            }));
+            testContext1.Setup(m => m.SaveChangesAsync()).ReturnsAsync(1);
+            testContext2.Setup(m => m.SaveChangesAsync()).ReturnsAsync(1);
 
             _mockUnitOfWorkContextFactory.Setup(m => m.GetContext<bool>()).Returns(testContext1.Object);
             _mockUnitOfWorkContextFactory.Setup(m => m.GetContext<int>()).Returns(testContext2.Object);

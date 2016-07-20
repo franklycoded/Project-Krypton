@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using KryptonAPI.Data;
 using KryptonAPI.Data.Models.JobScheduler;
@@ -53,7 +54,7 @@ namespace KryptonAPI.Service.JobScheduler
         /// <summary>
         /// <see cref="IJobItemsManager.SubmitTaskResult" />
         /// </summary>
-        public async Task SubmitTaskResultAsync(TaskResultDto taskResult)
+        public async Task<long> SubmitTaskResultAsync(TaskResultDto taskResult)
         {
             if(taskResult == null) throw new ArgumentNullException(nameof(taskResult));
             
@@ -66,6 +67,8 @@ namespace KryptonAPI.Service.JobScheduler
             jobItem.ErrorMessage = taskResult.ErrorMessage;
 
             await _unitOfWork.SaveChangesAsync();
+
+            return jobItem.Id;
         }
     }
 }

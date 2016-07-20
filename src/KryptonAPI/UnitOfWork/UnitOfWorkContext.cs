@@ -43,7 +43,7 @@ namespace KryptonAPI.UnitOfWork
         /// <summary>
         /// <see cref="IUnitOfWorkContext.SaveChangesAsync" />
         /// </summary>
-        public Task SaveChangesAsync()
+        public Task<int> SaveChangesAsync()
         {
             return _context.SaveChangesAsync();
         }

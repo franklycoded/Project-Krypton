@@ -124,7 +124,7 @@ class JobSchedulerTests
     end
 
     def test_submitResult_submitEmpty_return500()
-        RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", nil, {:content_type => :json}) { |response, request, result, &block|
+        RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", nil, {:content_type => :json, :accept => :json}) { |response, request, result, &block|
         case response.code
             when 500
                 return true
@@ -140,9 +140,9 @@ class JobSchedulerTests
 
         begin
             #Submitting successful task result
-            jdata = JSON.generate(["JobItemId" => 1, "TaskResult" => "successful result", "IsSuccessful" => true, "ErrorMessage" => nil])
+            jdata = {"JobItemId" => 1, "TaskResult" => "successful result", "IsSuccessful" => true, "ErrorMessage" => nil}.to_json
 
-            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json}) { |response, request, result, &block|
+            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json, :accept => :json}) { |response, request, result, &block|
             case response.code
                 when 500
                     return true
@@ -172,13 +172,14 @@ class JobSchedulerTests
             db.execute("insert into JobItems (CreatedUTC, JobId, JsonResult, ModifiedUTC, StatusId, Code, JsonData) values('2016-01-01', #{lastRowId}, 'noresult', '2016-01-01', 3, 'code', 'jsondata')")
 
             lastRowId = getLastRowId(db)
-
+            
             #Submitting successful task result
-            jdata = JSON.generate(["JobItemId" => lastRowId, "TaskResult" => "successful result", "IsSuccessful" => true, "ErrorMessage" => nil])
+            jdata = { "JobItemId" => lastRowId, "TaskResult" => "successful result", "IsSuccessful" => true, "ErrorMessage" => nil }.to_json
 
-            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json}) { |response, request, result, &block|
+            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json, :accept => :json}) { |response, request, result, &block|
             case response.code
                 when 200
+                    
                     # Check if JobItem status id is Success (4)
                     db.results_as_hash = true
                     statusId = 0
@@ -201,7 +202,8 @@ class JobSchedulerTests
 
                     return true
                 else
-                    puts "Unexpected response code: #{response.code}"
+                    
+                    puts "Unexpected response code: #{response.code}. Error: #{response.body}"
                     return false
                 end
             } 
@@ -228,9 +230,9 @@ class JobSchedulerTests
             lastRowId = getLastRowId(db)
 
             #Submitting successful task result
-            jdata = JSON.generate(["JobItemId" => lastRowId, "TaskResult" => "error result", "IsSuccessful" => false, "ErrorMessage" => "error message"])
+            jdata = {"JobItemId" => lastRowId, "TaskResult" => "error result", "IsSuccessful" => false, "ErrorMessage" => "error message"}.to_json
 
-            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json}) { |response, request, result, &block|
+            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json, :accept => :json}) { |response, request, result, &block|
             case response.code
                 when 200
                     # Check if JobItem status id is Fail (5)

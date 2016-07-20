@@ -23,6 +23,6 @@ namespace KryptonAPI.UnitOfWork
         /// Saves changes to the EF db context asynchronously
         /// </summary>
         /// <returns>The Task object of the async operation</returns>
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
     }
 }

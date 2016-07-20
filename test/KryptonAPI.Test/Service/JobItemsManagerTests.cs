@@ -156,7 +156,7 @@ namespace KryptonAPI.Test.Service
         }
 
         [Test]
-        public void Test_SubmitTaskResultAsync_SuccessfulTaskResult_UpdateJobItem(){
+        public void Test_SubmitTaskResultAsync_SuccessfulTaskResult_UpdateJobItem_ReturnsJobItemId(){
             var jobItem = new JobItem(){
                 Id = 2,
                 StatusId = 3,
@@ -175,12 +175,14 @@ namespace KryptonAPI.Test.Service
 
             var manager = new JobItemsManager(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object, _mockTaskDataContractMapper.Object, _mockJobItemsQueue.Object);
 
-            manager.SubmitTaskResultAsync(taskResult).Wait();
+            var result = manager.SubmitTaskResultAsync(taskResult).Result;
 
+            Assert.AreEqual(result, jobItem.Id);
             _mockRepository.Verify(m => m.GetByIdAsync(2), Times.Once);
             Assert.AreEqual(jobItem.JsonResult, taskResult.TaskResult);
             Assert.AreEqual(jobItem.StatusId, 4);
             Assert.IsNull(jobItem.ErrorMessage);
+            _mockUnitOfWork.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
         [Test]
@@ -203,12 +205,14 @@ namespace KryptonAPI.Test.Service
 
             var manager = new JobItemsManager(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object, _mockTaskDataContractMapper.Object, _mockJobItemsQueue.Object);
 
-            manager.SubmitTaskResultAsync(taskResult).Wait();
+            var result = manager.SubmitTaskResultAsync(taskResult).Result;
 
+            Assert.AreEqual(result, jobItem.Id);
             _mockRepository.Verify(m => m.GetByIdAsync(2), Times.Once);
             Assert.AreEqual(jobItem.JsonResult, taskResult.TaskResult);
             Assert.AreEqual(jobItem.StatusId, 5);
             Assert.AreEqual(jobItem.ErrorMessage, taskResult.ErrorMessage);
+            _mockUnitOfWork.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
 
         [Test]

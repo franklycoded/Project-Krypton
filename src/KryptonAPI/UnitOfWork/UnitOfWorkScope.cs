@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace KryptonAPI.UnitOfWork
@@ -57,17 +58,19 @@ namespace KryptonAPI.UnitOfWork
         /// <summary>
         /// <see cref="IUnitOfWork.SaveChangesAsync" />
         /// </summary>
-        public Task SaveChangesAsync(){
-            var taskList = new List<Task>();
+        public async Task<int> SaveChangesAsync(){
+            var taskList = new List<Task<int>>();
             
             lock(_contextLock){
                 foreach (var context in _contextDictionary)
                 {
-                    taskList.Add(Task.Factory.StartNew(() => context.Value.SaveChangesAsync()));
+                    taskList.Add(context.Value.SaveChangesAsync());
                 }
             }
 
-            return Task.WhenAll(taskList);
+            var result = await Task.WhenAll(taskList);
+
+            return result.Sum();
         }
 
         #region IDisposable Support

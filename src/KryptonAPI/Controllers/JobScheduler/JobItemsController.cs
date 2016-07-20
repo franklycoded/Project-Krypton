@@ -36,7 +36,7 @@ namespace KryptonAPI.Controllers.JobScheduler
         }
 
         [HttpPost("result")]
-        public async Task<IActionResult> SubmitTaskResult(TaskResultDto taskResult){
+        public async Task<IActionResult> SubmitTaskResult([FromBody] TaskResultDto taskResult){
             try
             {
                 if(taskResult == null) throw new ArgumentNullException(nameof(taskResult));
