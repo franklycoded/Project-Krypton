@@ -12,7 +12,7 @@ namespace KryptonAPI.DataContracts.JobScheduler
         public long JobItemId { get; set; }
         
         [DataMember]
-        public object TaskResult { get; set; }
+        public string TaskResult { get; set; }
         
         [DataMember]
         public bool IsSuccessful { get; set; }

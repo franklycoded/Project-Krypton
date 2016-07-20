@@ -20,6 +20,6 @@ namespace KryptonAPI.Service.JobScheduler
         /// </summary>
         /// <param name="taskResult">The submitted task result</param>
         /// <returns>True if the submission was successful, false otherwise</returns>
-        Task<bool> SubmitTaskResultAsync(TaskResultDto taskResult);
+        Task SubmitTaskResultAsync(TaskResultDto taskResult);
     }
 }

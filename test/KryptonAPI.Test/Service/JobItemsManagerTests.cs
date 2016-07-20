@@ -145,5 +145,90 @@ namespace KryptonAPI.Test.Service
             Assert.AreEqual(jobItem.StatusId, (long)EJobStatus.Running);
             _mockUnitOfWork.Verify(m => m.SaveChangesAsync(), Times.Once);
         }
+
+        [Test]
+        public void Test_SubmitTaskResultAsync_NullTaskResult_ArgumentNullException(){
+            Assert.ThrowsAsync<ArgumentNullException>(() => {
+                var manager = new JobItemsManager(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object, _mockTaskDataContractMapper.Object, _mockJobItemsQueue.Object);
+
+                return manager.SubmitTaskResultAsync(null); 
+            });
+        }
+
+        [Test]
+        public void Test_SubmitTaskResultAsync_SuccessfulTaskResult_UpdateJobItem(){
+            var jobItem = new JobItem(){
+                Id = 2,
+                StatusId = 3,
+                JsonResult = "noresult",
+                ErrorMessage = null
+            };
+
+            var taskResult = new TaskResultDto(){
+                JobItemId = 2,
+                TaskResult = "task result",
+                IsSuccessful = true,
+                ErrorMessage = null
+            };
+            
+            _mockRepository.Setup(m => m.GetByIdAsync(2)).ReturnsAsync(jobItem);
+
+            var manager = new JobItemsManager(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object, _mockTaskDataContractMapper.Object, _mockJobItemsQueue.Object);
+
+            manager.SubmitTaskResultAsync(taskResult).Wait();
+
+            _mockRepository.Verify(m => m.GetByIdAsync(2), Times.Once);
+            Assert.AreEqual(jobItem.JsonResult, taskResult.TaskResult);
+            Assert.AreEqual(jobItem.StatusId, 4);
+            Assert.IsNull(jobItem.ErrorMessage);
+        }
+
+        [Test]
+        public void Test_SubmitTaskResultAsync_ErrorTaskResult_UpdateJobItem(){
+            var jobItem = new JobItem(){
+                Id = 2,
+                StatusId = 3,
+                JsonResult = "noresult",
+                ErrorMessage = null
+            };
+
+            var taskResult = new TaskResultDto(){
+                JobItemId = 2,
+                TaskResult = "error task result",
+                IsSuccessful = false,
+                ErrorMessage = "task result error message"
+            };
+            
+            _mockRepository.Setup(m => m.GetByIdAsync(2)).ReturnsAsync(jobItem);
+
+            var manager = new JobItemsManager(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object, _mockTaskDataContractMapper.Object, _mockJobItemsQueue.Object);
+
+            manager.SubmitTaskResultAsync(taskResult).Wait();
+
+            _mockRepository.Verify(m => m.GetByIdAsync(2), Times.Once);
+            Assert.AreEqual(jobItem.JsonResult, taskResult.TaskResult);
+            Assert.AreEqual(jobItem.StatusId, 5);
+            Assert.AreEqual(jobItem.ErrorMessage, taskResult.ErrorMessage);
+        }
+
+        [Test]
+        public void Test_SubmitTaskResultAsync_JobItemNotFound_ThrowException(){
+            var taskResult = new TaskResultDto(){
+                JobItemId = 2,
+                TaskResult = "error task result",
+                IsSuccessful = false,
+                ErrorMessage = "task result error message"
+            };
+            
+            _mockRepository.Setup(m => m.GetByIdAsync(2)).ReturnsAsync(null);
+
+            var manager = new JobItemsManager(_mockUnitOfWork.Object, _mockRepository.Object, _mockDataContractMapper.Object, _mockTaskDataContractMapper.Object, _mockJobItemsQueue.Object);
+
+            Assert.ThrowsAsync<Exception>(() => {
+                return manager.SubmitTaskResultAsync(taskResult);
+            });
+            
+            _mockRepository.Verify(m => m.GetByIdAsync(2), Times.Once);
+        }
     }
 }

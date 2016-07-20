@@ -53,9 +53,19 @@ namespace KryptonAPI.Service.JobScheduler
         /// <summary>
         /// <see cref="IJobItemsManager.SubmitTaskResult" />
         /// </summary>
-        public async Task<bool> SubmitTaskResultAsync(TaskResultDto taskResult)
+        public async Task SubmitTaskResultAsync(TaskResultDto taskResult)
         {
-            throw new NotImplementedException();
+            if(taskResult == null) throw new ArgumentNullException(nameof(taskResult));
+            
+            var jobItem = await _repository.GetByIdAsync(taskResult.JobItemId);
+
+            if(jobItem == null) throw new Exception(string.Format("Can't find job item with id {0} in the database!", taskResult.JobItemId));
+
+            jobItem.JsonResult = taskResult.TaskResult;
+            jobItem.StatusId = (long)((taskResult.IsSuccessful) ? EJobStatus.Success : EJobStatus.Fail);
+            jobItem.ErrorMessage = taskResult.ErrorMessage;
+
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

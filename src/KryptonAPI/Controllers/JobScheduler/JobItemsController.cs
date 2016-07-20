@@ -41,9 +41,7 @@ namespace KryptonAPI.Controllers.JobScheduler
             {
                 if(taskResult == null) throw new ArgumentNullException(nameof(taskResult));
 
-                var result = await _jobItemsManager.SubmitTaskResultAsync(taskResult);
-
-                if(!result) throw new Exception(string.Format("Error while submitting task result for JobItem {0}. See log for details.", taskResult.JobItemId));
+                await _jobItemsManager.SubmitTaskResultAsync(taskResult);
 
                 return Ok();
             }

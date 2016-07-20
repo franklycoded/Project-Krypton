@@ -4,6 +4,8 @@ namespace KryptonAPI.Data.Models.JobScheduler
     {
         Pending = 1,
         Queued = 2,
-        Running = 3
+        Running = 3,
+        Success = 4,
+        Fail = 5
     }
 }

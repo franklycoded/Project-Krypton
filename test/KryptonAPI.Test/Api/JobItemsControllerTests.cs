@@ -72,8 +72,6 @@ namespace KryptonAPI.Test.Api
         [Test]
         public void Test_SubmitTaskResult_SuccessSubmitting_Return_200(){
             var taskResult = new TaskResultDto();
-            
-            _mockJobItemsManager.Setup(m => m.SubmitTaskResultAsync(It.IsAny<TaskResultDto>())).ReturnsAsync(true);
 
             var controller = new JobItemsController(_mockJobItemsManager.Object);
             var result = controller.SubmitTaskResult(taskResult).Result;
@@ -87,7 +85,7 @@ namespace KryptonAPI.Test.Api
         public void Test_SubmitTaskResult_ErrorWhileSubmitting_Return_500(){
             var taskResult = new TaskResultDto();
             
-            _mockJobItemsManager.Setup(m => m.SubmitTaskResultAsync(It.IsAny<TaskResultDto>())).ReturnsAsync(false);
+            _mockJobItemsManager.Setup(m => m.SubmitTaskResultAsync(It.IsAny<TaskResultDto>())).Throws(new Exception("submit exception"));
 
             var controller = new JobItemsController(_mockJobItemsManager.Object);
             var result = controller.SubmitTaskResult(taskResult).Result;
