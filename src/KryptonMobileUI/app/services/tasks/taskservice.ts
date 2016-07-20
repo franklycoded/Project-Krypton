@@ -12,7 +12,6 @@ export class TaskService {
     
     public getNext() : Observable<Task> {
         return this.http.get("http://localhost:5000/api/jobitems/next")
-        //return this.http.get("http://localhost:5000/api/jobitems/6")
                         .map(this.extractData)
                         .catch(this.handleError)
     }
@@ -20,7 +19,6 @@ export class TaskService {
     private extractData(res: Response) {
         let body = res.json();
         return new Task(body.JobItemId, body.Code, body.JsonData);
-        //return new Task(body.Id, body.Code, body.JsonData);
     }
 
     private handleError (error: any) {
