@@ -135,6 +135,30 @@ class JobSchedulerTests
         } 
     end
 
+    def test_submitResult_jobItemNotInDatabase_return500()
+        db = nil
+
+        begin
+            #Submitting successful task result
+            jdata = JSON.generate(["JobItemId" => 1, "TaskResult" => "successful result", "IsSuccessful" => true, "ErrorMessage" => nil])
+
+            RestClient.post("http://#{@apiHostname}:#{@apiPort}/api/jobitems/result", jdata, {:content_type => :json}) { |response, request, result, &block|
+            case response.code
+                when 500
+                    return true
+                else
+                    puts "Unexpected response code: #{response.code}"
+                    return false
+                end
+            } 
+
+        ensure
+            if db != nil
+                db.close
+            end
+        end
+    end
+
     def test_submitResult_successfulResult_stateChangedToSuccess_return200()
         db = nil
 
