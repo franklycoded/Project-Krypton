@@ -6,7 +6,7 @@ class Helper
         @queueEnginePort = queueEnginePort
     end
 
-    def cleanDb(dest)
+    def cleanDb()
         puts "Cleaning database"
         
         db = SQLite3::Database.new( @dbPath )
@@ -50,7 +50,7 @@ class Helper
         end
     end
 
-    def createKryptonApiService(dest)
+    def createKryptonApiService()
         puts "Starting KryptonAPI"
 
         kryptonApiPid = -1
@@ -82,11 +82,11 @@ class Helper
         puts "KryptonAPI stopped"
     end
 
-    def runTest(dest, testMethod)
-        cleanDb(dest)
+    def runTest(testMethod)
+        cleanDb()
         cleanQueueEngine()
         queueConnection = createQueueEngine()
-        kryptonApiPid = createKryptonApiService(dest)
+        kryptonApiPid = createKryptonApiService()
 
         puts "Running: #{testMethod.name}"
         testResult = testMethod.call
@@ -102,7 +102,7 @@ class Helper
         queueConnection.close
 
         cleanQueueEngine()
-        cleanDb(dest)
+        cleanDb()
 
         return testResult
     end

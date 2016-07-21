@@ -41,7 +41,7 @@ puts "Running tests..."
 resultsArray = Hash.new
 
 tests.each do |test|
-    testResult = testHelper.runTest(dest, test)
+    testResult = testHelper.runTest(test)
 
     resultsArray[test.name] = testResult
 
