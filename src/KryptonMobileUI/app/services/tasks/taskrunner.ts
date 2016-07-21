@@ -15,34 +15,32 @@ export class TaskRunnerService {
 
     private runTask(task: Task) : Observable<Task>{
         return Observable.create(observer => {
-        var blob = new Blob([task.Code], {type: 'application/javascript'});
-        
-        console.log("starting worker for task " + task.JobItemId);
-        var worker = new Worker(URL.createObjectURL(blob));
-        worker.postMessage(task.JsonData);
-        worker.onmessage = function(event) {
+            // Parsing jsonData
+            var parsedData = null;
+            try {
+                parsedData = JSON.parse(task.JsonData);
+            }
+            catch(e){
+                observer.next(new TaskResult(task.JobItemId, null, false, "Error while parsing JsonData: " + e.toString()));
+                observer.complete();
+                return;
+            }
             
-            observer.next(new TaskResult(task.JobItemId, event.data.results, true, null));
-            observer.complete();
+            // Creating executing blob
+            var blob = new Blob([task.Code], {type: 'application/javascript'});
+            var worker = new Worker(URL.createObjectURL(blob));
+            worker.postMessage(parsedData);
             
-            console.log("worker finished");
-            worker.terminate();
-        }; 
+            worker.onmessage = function(event) {
+                observer.next(new TaskResult(task.JobItemId, event.data.taskResult, true, null));
+                observer.complete();
+                worker.terminate();
+            }; 
         });
     }
 
     private feedTasks(): Observable<Task> {
         var self = this;
-        
-        // return Observable
-        //         .interval(100)
-        //         .flatMap(() => {
-        //             return self.taskService.getNext();
-        //         })
-        //         .skipWhile(() => self.isBusy)
-        //         .catch(() => {
-        //             return Observable.throw("myerror");
-        //         });
 
         return Observable.create(observer => {
             setInterval(function(){
@@ -66,14 +64,23 @@ export class TaskRunnerService {
         return Observable.create(observer => {
             observer.next("Starting worker...");
 
-            self.feedTasks()
-                    .subscribe(
-                        task => {
-                            console.log("executing task:");
-                            console.log(task);
+            self.feedTasks().subscribe(
+                task => {
+                    console.log("executing task:");
+                    console.log(task);
+                    self.runTask(task).subscribe(
+                        result => {
+                            console.log(result);
+                            self.isBusy = false;
+                        },
+                        error => {
+                            console.log("error while executing task");
+                            console.log(error);
                             self.isBusy = false;
                         }
                     )
+                }
+                )
         });
     }
 }

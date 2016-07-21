@@ -3,6 +3,7 @@ require 'open3'
 require 'sqlite3'
 require 'bunny'
 require './kryptonapi.acc.t.helpers.rb'
+require './kryptonapi.ui.t.cases.rb'
 
 #Arguments
 scenario = ARGV[0];
@@ -16,13 +17,28 @@ apiPort = 5000
 dbPath = "#{dest}/kryptonapi.db"
 
 testHelper = Helper.new(dest, dbPath, queueEngineHostname, queueEnginePort)
+testCases = KryptonApiUiTestCases.new(queueEngineHostname, queueEnginePort, taskQueueName, apiHostname, apiPort, dbPath)
 
 system("ruby kryptonapi.publish.rb #{dest}")
 testHelper.cleanDb()
+testHelper.killKryptonApiService(nil)
 testHelper.cleanQueueEngine()
 testHelper.createQueueEngine()
-testHelper.createKryptonApiService()
+kryptonApiPid = testHelper.createKryptonApiService()
 
+puts "scenario to run: #{scenario}"
 
+begin
+    if(scenario == 'calcexamples')
+        testCases.fillTaskQueueCalcExamples()
+    end
+rescue
+    if kryptonApiPid != nil
+        testHelper.killKryptonApiService(kryptonApiPid)
+    end
+
+    testHelper.cleanDb()
+    testHelper.cleanQueueEngine()
+end
 
 

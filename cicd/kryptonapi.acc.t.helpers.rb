@@ -77,7 +77,11 @@ class Helper
     def killKryptonApiService(pid)
         puts "Stopping KryptonAPI"
 
-        system("kill #{pid}")
+        if(pid != nil)
+            system("kill #{pid}")
+        else
+            system ("killall -c dotnet")
+        end
 
         puts "KryptonAPI stopped"
     end
