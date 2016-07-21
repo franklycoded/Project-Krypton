@@ -11,10 +11,7 @@ class KryptonApiUiTestCases
     def fillTaskQueueCalcExamples()
         code = "function executeTask(taskData){ return taskData.left + taskData.right; } 
                 this.onmessage = function(e) {
-                    console.log(''Message received from main script, starting execution'');
-                    console.log(e.data);
                     var taskResult = executeTask(e.data);
-                    console.log(taskResult);
                     postMessage({taskResult: taskResult});
                 };";
         data = '{"left": 5, "right": 6}';

@@ -29,13 +29,20 @@ export class TaskRunnerService {
             // Creating executing blob
             var blob = new Blob([task.Code], {type: 'application/javascript'});
             var worker = new Worker(URL.createObjectURL(blob));
-            worker.postMessage(parsedData);
             
             worker.onmessage = function(event) {
-                observer.next(new TaskResult(task.JobItemId, event.data.taskResult, true, null));
+                observer.next(new TaskResult(task.JobItemId, JSON.stringify(event.data.taskResult), true, null));
                 observer.complete();
                 worker.terminate();
-            }; 
+            };
+
+            worker.onerror = function(err){
+                observer.next(new TaskResult(task.JobItemId, null, false, "Error while executing task: " + err.message));
+                observer.complete();
+                worker.terminate();
+            }
+
+            worker.postMessage(parsedData);
         });
     }
 
@@ -66,8 +73,7 @@ export class TaskRunnerService {
 
             self.feedTasks().subscribe(
                 task => {
-                    console.log("executing task:");
-                    console.log(task);
+                    console.log("executing task");
                     self.runTask(task).subscribe(
                         result => {
                             console.log(result);
