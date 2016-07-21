@@ -19,28 +19,30 @@ export class TaskRunnerService {
         return Observable.create(observer => {
             observer.next("Starting worker...");
 
-            self.feedTasks().subscribe(
-                task => self.runTask(task)
-            );
+            self.feedTasks()
+                .flatMap((task) => self.executeTask(task))
+                .map((result: TaskResult) => {
+                    console.log("calculated once, posting result");
+                    console.log(result);
+                    return result;
+                })
+                .flatMap((taskResult) => this.taskService.postTaskResult(taskResult))
+                .map((result: boolean) => {
+                    console.log("post result: " + result);
+                    return result;
+                })
+                .subscribe(
+                    result => {
+                        console.log("subscribed result:" + result);
+                        self.isBusy = false;
+                    },
+                    error => {
+                        console.log("error while executing task");
+                        console.log(error);
+                        self.isBusy = false;
+                    }
+                );
         });
-    }
-
-    private runTask(task: Task){
-        var self = this;
-        
-        console.log("executing task");
-
-        self.executeTask(task).subscribe(
-            result => {
-                console.log(result);
-                self.isBusy = false;
-            },
-            error => {
-                console.log("error while executing task");
-                console.log(error);
-                self.isBusy = false;
-            }
-        )
     }
 
     private executeTask(task: Task) : Observable<Task>{
@@ -56,23 +58,29 @@ export class TaskRunnerService {
                 return;
             }
             
-            // Creating executing blob
-            var blob = new Blob([task.Code], {type: 'application/javascript'});
-            var worker = new Worker(URL.createObjectURL(blob));
-            
-            worker.onmessage = function(event) {
-                observer.next(new TaskResult(task.JobItemId, JSON.stringify(event.data.taskResult), true, null));
-                observer.complete();
-                worker.terminate();
-            };
+            try {
+                // Creating executing blob
+                var blob = new Blob([task.Code], {type: 'application/javascript'});
+                var worker = new Worker(URL.createObjectURL(blob));
+                
+                worker.onmessage = function(event) {
+                    observer.next(new TaskResult(task.JobItemId, JSON.stringify(event.data.taskResult), true, null));
+                    observer.complete();
+                    worker.terminate();
+                };
+    	        
+                worker.onerror = function(err){
+                    observer.next(new TaskResult(task.JobItemId, null, false, "Error while executing task: " + err.message));
+                    observer.complete();
+                    worker.terminate();
+                }
 
-            worker.onerror = function(err){
-                observer.next(new TaskResult(task.JobItemId, null, false, "Error while executing task: " + err.message));
+                worker.postMessage(parsedData);
+            } catch(e) {
+                observer.next(new TaskResult(task.JobItemId, null, false, "Error while running task: " + e.toString()));
                 observer.complete();
-                worker.terminate();
+                return;
             }
-
-            worker.postMessage(parsedData);
         });
     }
 

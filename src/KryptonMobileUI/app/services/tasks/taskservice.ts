@@ -3,6 +3,7 @@ import {Injectable} from 'angular2/core';
 import {Observable} from 'rxjs/Rx';
 import {Headers, Http, Response} from 'angular2/http';
 import {Task} from '../../models/tasks/task';
+import {TaskResult} from '../../models/tasks/taskresult';
 
 @Injectable()
 export class TaskService {
@@ -14,6 +15,17 @@ export class TaskService {
         return this.http.get("http://localhost:5000/api/jobitems/next")
                         .map(this.extractData)
                         .catch(this.handleError)
+    }
+
+    public postTaskResult(taskResult: TaskResult): Observable<boolean> {
+        var headers = new Headers({
+        'Content-Type': 'application/json'});
+        
+        return this.http.post("http://localhost:5000/api/jobitems/result", JSON.stringify(taskResult), {headers: headers})
+                .map(() => {
+                    return true;}
+                )
+                .catch(this.handleError);
     }
 
     private extractData(res: Response) {
