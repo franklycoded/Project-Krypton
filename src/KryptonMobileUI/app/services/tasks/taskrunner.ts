@@ -13,7 +13,37 @@ export class TaskRunnerService {
         this.isBusy = false;
     }
 
-    private runTask(task: Task) : Observable<Task>{
+    public runWorker(): Observable<string> {
+        var self = this;
+        
+        return Observable.create(observer => {
+            observer.next("Starting worker...");
+
+            self.feedTasks().subscribe(
+                task => self.runTask(task)
+            );
+        });
+    }
+
+    private runTask(task: Task){
+        var self = this;
+        
+        console.log("executing task");
+
+        self.executeTask(task).subscribe(
+            result => {
+                console.log(result);
+                self.isBusy = false;
+            },
+            error => {
+                console.log("error while executing task");
+                console.log(error);
+                self.isBusy = false;
+            }
+        )
+    }
+
+    private executeTask(task: Task) : Observable<Task>{
         return Observable.create(observer => {
             // Parsing jsonData
             var parsedData = null;
@@ -62,31 +92,6 @@ export class TaskRunnerService {
                     );
                 }
             }, 1000);
-        });
-    }
-
-    public runWorker(): Observable<string> {
-        var self = this;
-        
-        return Observable.create(observer => {
-            observer.next("Starting worker...");
-
-            self.feedTasks().subscribe(
-                task => {
-                    console.log("executing task");
-                    self.runTask(task).subscribe(
-                        result => {
-                            console.log(result);
-                            self.isBusy = false;
-                        },
-                        error => {
-                            console.log("error while executing task");
-                            console.log(error);
-                            self.isBusy = false;
-                        }
-                    )
-                }
-                )
         });
     }
 }
