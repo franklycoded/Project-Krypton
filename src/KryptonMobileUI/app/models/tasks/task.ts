@@ -1,4 +1,4 @@
 export class Task {
-    constructor(public JobItemId: number, public Code: string, public JsonData: string){
+    constructor(public jobItemId: number, public code: string, public jsonData: string){
     }
 }

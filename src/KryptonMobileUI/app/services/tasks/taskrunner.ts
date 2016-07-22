@@ -22,7 +22,7 @@ export class TaskRunnerService {
             self.feedTasks()
                 .flatMap((task) => self.executeTask(task))
                 .map((result: TaskResult) => {
-                    console.log("calculated once, posting result");
+                    console.log("calculated, posting result");
                     console.log(result);
                     return result;
                 })
@@ -50,34 +50,34 @@ export class TaskRunnerService {
             // Parsing jsonData
             var parsedData = null;
             try {
-                parsedData = JSON.parse(task.JsonData);
+                parsedData = JSON.parse(task.jsonData);
             }
             catch(e){
-                observer.next(new TaskResult(task.JobItemId, null, false, "Error while parsing JsonData: " + e.toString()));
+                observer.next(new TaskResult(task.jobItemId, null, false, "Error while parsing JsonData: " + e.toString()));
                 observer.complete();
                 return;
             }
             
             try {
                 // Creating executing blob
-                var blob = new Blob([task.Code], {type: 'application/javascript'});
+                var blob = new Blob([task.code], {type: 'application/javascript'});
                 var worker = new Worker(URL.createObjectURL(blob));
                 
                 worker.onmessage = function(event) {
-                    observer.next(new TaskResult(task.JobItemId, JSON.stringify(event.data.taskResult), true, null));
+                    observer.next(new TaskResult(task.jobItemId, JSON.stringify(event.data.taskResult), true, null));
                     observer.complete();
                     worker.terminate();
                 };
     	        
                 worker.onerror = function(err){
-                    observer.next(new TaskResult(task.JobItemId, null, false, "Error while executing task: " + err.message));
+                    observer.next(new TaskResult(task.jobItemId, null, false, "Error while executing task: " + err.message));
                     observer.complete();
                     worker.terminate();
                 }
 
                 worker.postMessage(parsedData);
             } catch(e) {
-                observer.next(new TaskResult(task.JobItemId, null, false, "Error while running task: " + e.toString()));
+                observer.next(new TaskResult(task.jobItemId, null, false, "Error while running task: " + e.toString()));
                 observer.complete();
                 return;
             }

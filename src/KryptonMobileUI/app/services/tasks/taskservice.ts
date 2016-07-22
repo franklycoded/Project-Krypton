@@ -30,7 +30,7 @@ export class TaskService {
 
     private extractData(res: Response) {
         let body = res.json();
-        return new Task(body.JobItemId, body.Code, body.JsonData);
+        return new Task(body.jobItemId, body.code, body.jsonData);
     }
 
     private handleError (error: any) {

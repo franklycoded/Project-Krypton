@@ -81,7 +81,7 @@ class JobSchedulerTests
                     # Checking properties of response object
                     responseObject = JSON.parse(response.body, object_class: OpenStruct)
 
-                    if !(responseObject.JobItemId == lastRowId && responseObject.Code == "code" && responseObject.JsonData == "jsondata")
+                    if !(responseObject.jobItemId == lastRowId && responseObject.code == "code" && responseObject.jsonData == "jsondata")
                         puts "Unexpected response object: #{response.body}"
                         return false
                     end
