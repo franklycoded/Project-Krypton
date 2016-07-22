@@ -14,7 +14,7 @@ class KryptonApiUiTestCases
                     var taskResult = executeTask(e.data);
                     postMessage({taskResult: taskResult});
                 };";
-        data = '{"left": 5, "right": 6}';
+        data = '{"left": 5, "right": 7}';
 
         db = nil
         queueConn = nil
