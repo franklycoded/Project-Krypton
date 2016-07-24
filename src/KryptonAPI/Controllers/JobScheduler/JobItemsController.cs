@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crud.Net.Web.Controller;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 using KryptonAPI.Service.JobScheduler;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 namespace KryptonAPI.Controllers.JobScheduler
 {
     [Route("api/jobitems")]
-    public class JobItemsController : CRUDController<JobItem, JobItemDto>
+    public class JobItemsController : CrudController<JobItem, JobItemDto>
     {    
         private readonly IJobItemsManager _jobItemsManager;
         

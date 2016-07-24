@@ -1,3 +1,4 @@
+using Crud.Net.Core.DataContractMapper;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 
@@ -6,7 +7,7 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
     /// <summary>
     /// <see cref="IDataContractMapper" />
     /// </summary>
-    public class JobItemDtoMapper : DataContractMapper<JobItem, JobItemDto>
+    public class JobItemDtoMapper : CrudDtoMapper<JobItem, JobItemDto>
     {
         protected override JobItem OnMapDtoToEntity(JobItemDto dto, JobItem entity)
         {

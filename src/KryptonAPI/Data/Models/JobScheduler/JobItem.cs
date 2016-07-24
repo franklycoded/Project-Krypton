@@ -1,4 +1,5 @@
 using System;
+using Crud.Net.Core.DataModel;
 
 namespace KryptonAPI.Data.Models.JobScheduler
 {

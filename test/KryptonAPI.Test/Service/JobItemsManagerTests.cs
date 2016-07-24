@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Crud.Net.Core.DataContractMapper;
+using Crud.Net.Core.Repository;
+using Crud.Net.Core.UnitOfWork;
 using KryptonAPI.Data.Models.JobScheduler;
-using KryptonAPI.DataContractMappers;
 using KryptonAPI.DataContracts.JobScheduler;
-using KryptonAPI.Repository;
 using KryptonAPI.Service.JobScheduler;
-using KryptonAPI.UnitOfWork;
 using Moq;
 using NUnit.Framework;
 
@@ -17,18 +14,18 @@ namespace KryptonAPI.Test.Service
     public class JobItemsManagerTests
     {
         private Mock<IUnitOfWork> _mockUnitOfWork;
-        private Mock<IRepository<JobItem>> _mockRepository;
-        private Mock<IDataContractMapper<JobItem, JobItemDto>> _mockDataContractMapper;
-        private Mock<IDataContractMapper<JobItem, TaskDto>> _mockTaskDataContractMapper;
+        private Mock<ICrudRepository<JobItem>> _mockRepository;
+        private Mock<ICrudDtoMapper<JobItem, JobItemDto>> _mockDataContractMapper;
+        private Mock<ICrudDtoMapper<JobItem, TaskDto>> _mockTaskDataContractMapper;
         private Mock<IJobItemsQueue> _mockJobItemsQueue;
         
         [SetUp]
         public void Init(){
             _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _mockRepository = new Mock<IRepository<JobItem>>();
-            _mockDataContractMapper = new Mock<IDataContractMapper<JobItem, JobItemDto>>();
+            _mockRepository = new Mock<ICrudRepository<JobItem>>();
+            _mockDataContractMapper = new Mock<ICrudDtoMapper<JobItem, JobItemDto>>();
             _mockJobItemsQueue = new Mock<IJobItemsQueue>();
-            _mockTaskDataContractMapper = new Mock<IDataContractMapper<JobItem, TaskDto>>();
+            _mockTaskDataContractMapper = new Mock<ICrudDtoMapper<JobItem, TaskDto>>();
         }
 
         [Test]

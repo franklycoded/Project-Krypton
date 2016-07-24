@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using Crud.Net.Core.DataContract;
 
 namespace KryptonAPI.DataContracts.JobScheduler
 {
@@ -7,7 +8,7 @@ namespace KryptonAPI.DataContracts.JobScheduler
     /// Data transfer object representing a JobItem entity.
     /// </summary>
     [DataContract]
-    public class JobItemDto : ICRUDDto
+    public class JobItemDto : ICrudDto
     {
         [DataMember]
         public long Id { get; set; }

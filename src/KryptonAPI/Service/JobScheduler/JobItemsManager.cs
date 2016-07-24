@@ -1,27 +1,27 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
+using Crud.Net.Core.DataContractMapper;
+using Crud.Net.Core.Repository;
+using Crud.Net.Core.Service;
+using Crud.Net.Core.UnitOfWork;
 using KryptonAPI.Data;
 using KryptonAPI.Data.Models.JobScheduler;
-using KryptonAPI.DataContractMappers;
 using KryptonAPI.DataContracts.JobScheduler;
-using KryptonAPI.Repository;
-using KryptonAPI.UnitOfWork;
 
 namespace KryptonAPI.Service.JobScheduler
 {
     /// <summary>
     /// <see cref="IJobItemsManager" />
     /// </summary>
-    public class JobItemsManager : CRUDManager<KryptonAPIContext, JobItem, JobItemDto>, IJobItemsManager
+    public class JobItemsManager : CrudService<KryptonAPIContext, JobItem, JobItemDto>, IJobItemsManager
     {
         private readonly IJobItemsQueue _jobItemsQueue;
-        private readonly IDataContractMapper<JobItem, TaskDto> _taskDataContractMapper;
+        private readonly ICrudDtoMapper<JobItem, TaskDto> _taskDataContractMapper;
         
         public JobItemsManager(IUnitOfWork unitOfWork,
-            IRepository<JobItem> repository,
-            IDataContractMapper<JobItem, JobItemDto> dataContractMapper,
-            IDataContractMapper<JobItem, TaskDto> taskDataContractMapper,
+            ICrudRepository<JobItem> repository,
+            ICrudDtoMapper<JobItem, JobItemDto> dataContractMapper,
+            ICrudDtoMapper<JobItem, TaskDto> taskDataContractMapper,
             IJobItemsQueue jobItemsQueue) 
             : base(unitOfWork, repository, dataContractMapper)
         {

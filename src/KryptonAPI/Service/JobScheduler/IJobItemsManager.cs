@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Crud.Net.Core.Service;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 
@@ -7,7 +8,7 @@ namespace KryptonAPI.Service.JobScheduler
     /// <summary>
     /// Class to carry out operations related to JobItems
     /// </summary>
-    public interface IJobItemsManager : ICRUDManager<JobItem, JobItemDto>
+    public interface IJobItemsManager : ICrudService<JobItem, JobItemDto>
     {
         /// <summary>
         /// Gets the next job item to process from the queue

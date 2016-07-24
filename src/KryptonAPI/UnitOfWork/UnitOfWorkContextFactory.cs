@@ -1,4 +1,5 @@
 using System;
+using Crud.Net.EntityFramework.UnitOfWork;
 using KryptonAPI.Data;
 
 namespace KryptonAPI.UnitOfWork

@@ -9,14 +9,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using KryptonAPI.UnitOfWork;
-using KryptonAPI.Repository;
-using KryptonAPI.DataContractMappers;
 using KryptonAPI.Data;
-using KryptonAPI.Service;
 using KryptonAPI.DataContracts.JobScheduler;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContractMappers.JobScheduler;
 using KryptonAPI.Service.JobScheduler;
+using Crud.Net.EntityFramework.UnitOfWork;
+using Crud.Net.Core.UnitOfWork;
+using Crud.Net.Core.Repository;
+using Crud.Net.EntityFramework.Repository;
+using Crud.Net.Core.DataContractMapper;
 
 namespace KryptonAPI
 {
@@ -50,14 +52,14 @@ namespace KryptonAPI
             services.AddScoped<IUnitOfWorkScope, UnitOfWorkScope>((serviceProvider) => {
                 return serviceProvider.GetService<IUnitOfWork>() as UnitOfWorkScope;
             });
-            services.AddScoped<IRepositoryFactory<KryptonAPIContext>, RepositoryFactory<KryptonAPIContext>>();
-            services.AddScoped<IRepository<JobItem>, Repository<JobItem>>((serviceProvider) => {
-                return serviceProvider.GetService<IRepositoryFactory<KryptonAPIContext>>().GetRepository<JobItem>() as Repository<JobItem>;
+            services.AddScoped<ICrudRepositoryFactory<KryptonAPIContext>, CrudRepositoryFactory<KryptonAPIContext>>();
+            services.AddScoped<ICrudRepository<JobItem>, CrudRepository<JobItem>>((serviceProvider) => {
+                return serviceProvider.GetService<ICrudRepositoryFactory<KryptonAPIContext>>().GetRepository<JobItem>() as CrudRepository<JobItem>;
             });
 
             // Registering service layer
-            services.AddSingleton<IDataContractMapper<JobItem, JobItemDto>, JobItemDtoMapper>();
-            services.AddSingleton<IDataContractMapper<JobItem, TaskDto>, TaskDtoMapper>();
+            services.AddSingleton<ICrudDtoMapper<JobItem, JobItemDto>, JobItemDtoMapper>();
+            services.AddSingleton<ICrudDtoMapper<JobItem, TaskDto>, TaskDtoMapper>();
             services.AddSingleton<IJobItemsQueue, JobItemsQueue>();
             services.AddScoped<IJobItemsManager, JobItemsManager>();
             

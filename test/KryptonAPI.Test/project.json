@@ -12,6 +12,9 @@
     "NUnitLite": "3.4.1",
     "KryptonAPI": "1.0.0-*",
     "Moq": "4.6.36-alpha",
+    "Crud.Net.Core": "0.1.0",
+    "Crud.Net.EntityFramework": "0.1.0",
+    "Crud.Net.Web": "0.1.0",
     "System.Diagnostics.TraceSource": "4.0.0"
   },
 

@@ -1,4 +1,5 @@
 using System;
+using Crud.Net.Core.DataContractMapper;
 using KryptonAPI.Data.Models.JobScheduler;
 using KryptonAPI.DataContracts.JobScheduler;
 
@@ -7,7 +8,7 @@ namespace KryptonAPI.DataContractMappers.JobScheduler
     /// <summary>
     /// Maps a JobItem entity to a TaskDto and vice versa
     /// </summary>
-    public class TaskDtoMapper : IDataContractMapper<JobItem, TaskDto>
+    public class TaskDtoMapper : ICrudDtoMapper<JobItem, TaskDto>
     {
         /// <summary>
         /// This operation is not supported
