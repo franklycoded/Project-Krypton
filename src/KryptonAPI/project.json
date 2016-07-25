@@ -22,9 +22,9 @@
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0",
     "Newtonsoft.Json": "9.0.1",
     "RabbitMQ.Client": "4.0.0-*",
-    "Crud.Net.Core": "0.2.0",
-    "Crud.Net.EntityFramework": "0.2.0",
-    "Crud.Net.Web": "0.2.0"
+    "Crud.Net.Core": "0.3.0",
+    "Crud.Net.EntityFramework": "0.3.0",
+    "Crud.Net.Web": "0.3.0"
   },
 
   "tools": {
